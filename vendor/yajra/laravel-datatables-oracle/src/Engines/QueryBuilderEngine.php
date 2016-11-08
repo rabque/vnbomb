@@ -4,8 +4,7 @@ namespace Yajra\Datatables\Engines;
 
 use Closure;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Helper;
@@ -101,11 +100,6 @@ class QueryBuilderEngine extends BaseEngine
             $myQuery->select($this->connection->raw("'1' as {$row_count}"));
         }
 
-        // check for select soft deleted records
-        if (! $this->withTrashed && $this->modelUseSoftDeletes()) {
-            $myQuery->whereNull($myQuery->getModel()->getTable() . '.deleted_at');
-        }
-
         return $this->connection->table($this->connection->raw('(' . $myQuery->toSql() . ') count_row_table'))
                                 ->setBindings($myQuery->getBindings())->count();
     }
@@ -116,23 +110,8 @@ class QueryBuilderEngine extends BaseEngine
      * @param string $column
      * @return string
      */
-    protected function wrap($column)
-    {
+    protected function wrap($column) {
         return $this->connection->getQueryGrammar()->wrap($column);
-    }
-
-    /**
-     * Check if model use SoftDeletes trait
-     *
-     * @return boolean
-     */
-    private function modelUseSoftDeletes()
-    {
-        if ($this->query_type == 'eloquent') {
-            return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($this->query->getModel()));
-        }
-
-        return false;
     }
 
     /**
@@ -271,18 +250,13 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileRelationSearch($query, $relation, $column, $keyword)
     {
-        $myQuery      = clone $this->query;
-        $relationType = $myQuery->getModel()->{$relation}();
-        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query, $relationType) {
+        $myQuery = clone $this->query;
+        $myQuery->orWhereHas($relation, function ($builder) use ($column, $keyword, $query) {
             $builder->select($this->connection->raw('count(1)'));
             $this->compileQuerySearch($builder, $column, $keyword, '');
             $builder = "({$builder->toSql()}) >= 1";
 
-            if ($relationType instanceof MorphToMany) {
-                $query->orWhereRaw($builder, [$relationType->getMorphClass(), $this->prepareKeyword($keyword)]);
-            } else {
-                $query->orWhereRaw($builder, [$this->prepareKeyword($keyword)]);
-            }
+            $query->orWhereRaw($builder, [$keyword]);
         });
     }
 
@@ -296,14 +270,24 @@ class QueryBuilderEngine extends BaseEngine
      */
     protected function compileQuerySearch($query, $column, $keyword, $relation = 'or')
     {
+        $column = strstr($column, '(') ? $this->connection->raw($column) : $column;
         $column = $this->castColumn($column);
         $sql    = $column . ' LIKE ?';
 
         if ($this->isCaseInsensitive()) {
-            $sql = 'LOWER(' . $column . ') LIKE ?';
+            $sql     = 'LOWER(' . $column . ') LIKE ?';
+            $keyword = Str::lower($keyword);
         }
 
-        $query->{$relation . 'WhereRaw'}($sql, [$this->prepareKeyword($keyword)]);
+        if ($this->isWildcard()) {
+            $keyword = $this->wildcardLikeString($keyword);
+        }
+
+        if ($this->isSmartSearch()) {
+            $keyword = "%$keyword%";
+        }
+
+        $query->{$relation .'WhereRaw'}($sql, [$keyword]);
     }
 
     /**
@@ -322,29 +306,6 @@ class QueryBuilderEngine extends BaseEngine
         }
 
         return $column;
-    }
-
-    /**
-     * Prepare search keyword based on configurations.
-     *
-     * @param string $keyword
-     * @return string
-     */
-    protected function prepareKeyword($keyword)
-    {
-        if ($this->isCaseInsensitive()) {
-            $keyword = Str::lower($keyword);
-        }
-
-        if ($this->isWildcard()) {
-            $keyword = $this->wildcardLikeString($keyword);
-        }
-
-        if ($this->isSmartSearch()) {
-            $keyword = "%$keyword%";
-        }
-
-        return $keyword;
     }
 
     /**
@@ -419,58 +380,6 @@ class QueryBuilderEngine extends BaseEngine
     }
 
     /**
-     * Join eager loaded relation and get the related column name.
-     *
-     * @param string $relation
-     * @param string $relationColumn
-     * @return string
-     */
-    protected function joinEagerLoadedColumn($relation, $relationColumn)
-    {
-        $joins = [];
-        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
-            $joins[] = $join->table;
-        }
-
-        $model = $this->query->getRelation($relation);
-        if ($model instanceof BelongsToMany) {
-            $pivot   = $model->getTable();
-            $pivotPK = $model->getForeignKey();
-            $pivotFK = $model->getQualifiedParentKeyName();
-
-            if (! in_array($pivot, $joins)) {
-                $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
-            }
-
-            $related = $model->getRelated();
-            $table   = $related->getTable();
-            $tablePK = $related->getForeignKey();
-            $tableFK = $related->getQualifiedKeyName();
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
-            }
-        } else {
-            $table = $model->getRelated()->getTable();
-            if ($model instanceof HasOneOrMany) {
-                $foreign = $model->getForeignKey();
-                $other   = $model->getQualifiedParentKeyName();
-            } else {
-                $foreign = $model->getQualifiedForeignKey();
-                $other   = $model->getQualifiedOtherKeyName();
-            }
-
-            if (! in_array($table, $joins)) {
-                $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
-            }
-        }
-
-        $column = $table . '.' . $relationColumn;
-
-        return $column;
-    }
-
-    /**
      * Compile queries for column search.
      *
      * @param int $i
@@ -535,7 +444,6 @@ class QueryBuilderEngine extends BaseEngine
                     $orderable['direction']
                 );
             } else {
-                $valid = 1;
                 if (count(explode('.', $column)) > 1) {
                     $eagerLoads     = $this->getEagerLoads();
                     $parts          = explode('.', $column);
@@ -543,20 +451,65 @@ class QueryBuilderEngine extends BaseEngine
                     $relation       = implode('.', $parts);
 
                     if (in_array($relation, $eagerLoads)) {
-                        $relationship = $this->query->getRelation($relation);
-                        if (! ($relationship instanceof MorphToMany)) {
-                            $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
-                        } else {
-                            $valid = 0;
-                        }
+                        $column = $this->joinEagerLoadedColumn($relation, $relationColumn);
                     }
                 }
 
-                if ($valid == 1) {
-                    $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
-                }
+                $this->getQueryBuilder()->orderBy($column, $orderable['direction']);
             }
         }
+    }
+
+    /**
+     * Join eager loaded relation and get the related column name.
+     *
+     * @param string $relation
+     * @param string $relationColumn
+     * @return string
+     */
+    protected function joinEagerLoadedColumn($relation, $relationColumn)
+    {
+        $joins = [];
+        foreach ((array) $this->getQueryBuilder()->joins as $key => $join) {
+            $joins[] = $join->table;
+        }
+
+        $model = $this->query->getRelation($relation);
+        if ($model instanceof BelongsToMany) {
+            $pivot   = $model->getTable();
+            $pivotPK = $model->getForeignKey();
+            $pivotFK = $model->getQualifiedParentKeyName();
+
+            if (! in_array($pivot, $joins)) {
+                $this->getQueryBuilder()->leftJoin($pivot, $pivotPK, '=', $pivotFK);
+            }
+
+            $related = $model->getRelated();
+            $table   = $related->getTable();
+            $tablePK = $related->getForeignKey();
+            $tableFK = $related->getQualifiedKeyName();
+
+            if (! in_array($table, $joins)) {
+                $this->getQueryBuilder()->leftJoin($table, $pivot . '.' . $tablePK, '=', $tableFK);
+            }
+        } else {
+            $table = $model->getRelated()->getTable();
+            if ($model instanceof HasOne) {
+                $foreign = $model->getForeignKey();
+                $other   = $model->getQualifiedParentKeyName();
+            } else {
+                $foreign = $model->getQualifiedForeignKey();
+                $other   = $model->getQualifiedOtherKeyName();
+            }
+
+            if (! in_array($table, $joins)) {
+                $this->getQueryBuilder()->leftJoin($table, $foreign, '=', $other);
+            }
+        }
+
+        $column = $table . '.' . $relationColumn;
+
+        return $column;
     }
 
     /**

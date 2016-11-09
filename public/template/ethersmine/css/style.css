@@ -925,3 +925,7 @@ ul.bets {
 .player_error, .player_green, .player_info, .player_success {
 	padding: 0.8em 1.2em;
 }
+
+.mb20{
+	margin-bottom:20px !important;
+}

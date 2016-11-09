@@ -10,6 +10,9 @@
             <div class="col-sm-10">
                 <nav class="navigation">
                     <ul class="anchor-nav black-dark-bg">
+                        <li>
+                            <a href="{{ url("/games?uuid=".$uuid)  }}">Start game</a>
+                        </li>
                         @if(!empty($menuTop))
                             @foreach($menuTop as $menu)
                                 <li>

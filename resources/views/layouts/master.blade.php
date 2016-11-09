@@ -3,6 +3,7 @@
 
 <head>
     @include('partials.meta')
+    @include('partials.script')
 </head>
 <body>
 <!-- Start: Preloader section
@@ -23,6 +24,6 @@
 <!-- /Main Content -->
 @include('partials.footer')
 </div>
-@include('partials.script')
+
 </body>
 </html>

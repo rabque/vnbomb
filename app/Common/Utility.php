@@ -251,6 +251,10 @@ class Utility {
     }
 
 
+    public static function generateRandomString($length = 5) {
+        return substr(str_shuffle(str_repeat($x='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+    }
+
 
 
 }

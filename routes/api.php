@@ -18,3 +18,4 @@ use Illuminate\Http\Request;
 })->middleware('auth:api');*/
 
 Route::post('match', "ApiController@match")->middleware('api');
+Route::post('game/play', "GamesController@play")->middleware('api');

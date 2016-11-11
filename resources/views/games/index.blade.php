@@ -176,7 +176,10 @@
                             if(data.success == true){
                                 html = '<div class="alert alert-success" role="alert"> You found '+point+' bits (clicked cell (' + lastClick +  '))</div>';
                             }else{
+
                                 html = '<div class="alert alert-danger" role="alert"> Game over! You hit a mine lost '+point+' bits. (clicked cell (' + lastClick + '))</div>';
+                                html += '<p style=""><label>Share this game: </label> {{ url("/share/")  }}/'+ data.hash +' </p>';
+                                html += '<p style=""><label>Secret: </label> '+ data.secrectString +' </p>'
                             }
 
                             $(".stand_next span").html(point);

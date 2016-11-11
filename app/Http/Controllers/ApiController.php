@@ -25,10 +25,29 @@ class ApiController extends AppController
     public function match(Request $request)
     {
 
-        $input = $request->only(['uuid','username', 'password','clickMatch']);
+        $input = $request->only(['uuid','username', 'password','clickMatch','betAmount','numberOfMine','token']);
         $match = new Match();
-        $match->saveMatch($input);
+        $newMatch = $match->saveMatch($input);
+        $data = array();
+        if($newMatch->isPracticeMatch == 1){
+            $data["success"] = true;
+        }else{
+            $data["success"] = false;
+            $minePositions = json_decode($newMatch->minePositions,true);
+            $minePositions = implode(",",$minePositions);
+            $data["minePositions"] = $minePositions;
+        }
+        $mineClick = array();
+        if(!empty($newMatch->matchclick)){
+            foreach($newMatch->matchclick as $click){
+                $position = json_decode($click->clickHistory,true);
+                $position = (!empty($position))?"{$position['x']},{$position['y']}":"";
+                $mineClick[] = array("point"=>$click->point,"position"=>$position);
+            }
+        }
+        $data["click"] = $mineClick;
+        $data["betAmount"] = $newMatch->betAmount;
 
-        return response()->json($input["clickMatch"]);
+        return response()->json($data);
     }
 }

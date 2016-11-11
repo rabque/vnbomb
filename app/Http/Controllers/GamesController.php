@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Article;
+use App\Models\Match;
 use Illuminate\Http\Request;
 use SEO;
 /**
@@ -25,6 +26,7 @@ class GamesController extends AppController
 
     public function index($slug = "")
     {
+
         SEO::setTitle("Games");
         SEO::setDescription("Games");
         SEO::opengraph()->setUrl(url("/games"));
@@ -32,6 +34,18 @@ class GamesController extends AppController
         return view('games.index',[
         ]);
 
+    }
+
+    public function play(Request $request){
+
+        $betAmount = (!empty($request->input("betAmount")))?$request->input("betAmount"):30;
+        $numberOfMine = (!empty($request->input("numberOfMine")))?$request->input("numberOfMine"):1;
+        $numberOfMine = preg_replace("/[^0-9]+/i","",$numberOfMine);
+
+        return view('games.play',[
+            "betAmount" => $betAmount,
+            "numberOfMine" => $numberOfMine
+        ]);
     }
 
 }

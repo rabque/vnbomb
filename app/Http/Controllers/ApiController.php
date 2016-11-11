@@ -36,6 +36,8 @@ class ApiController extends AppController
             $minePositions = json_decode($newMatch->minePositions,true);
             $minePositions = implode(",",$minePositions);
             $data["minePositions"] = $minePositions;
+            $data["secrectString"] = $newMatch->secrectString;
+            $data["hash"] = $newMatch->hash;
         }
         $mineClick = array();
         if(!empty($newMatch->matchclick)){

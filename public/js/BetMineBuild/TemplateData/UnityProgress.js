@@ -14,7 +14,7 @@ function UnityProgress (dom) {
 	this.background = background;
 
 	var logoImage = document.createElement("img");
-	logoImage.src =this.path + "/progresslogo.png";
+	logoImage.src = this.path + "/progresslogo.png";
 	logoImage.style.position = "absolute";
 	parent.appendChild(logoImage);
 	this.logoImage = logoImage;

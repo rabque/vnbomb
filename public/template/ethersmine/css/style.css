@@ -418,7 +418,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', end
 	margin: 0;
 	text-align: center;
 	float: right;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 .anchor-nav li {
 	color: #868686;
@@ -430,7 +430,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', end
 	color: #151515;
 	font-size: 15px;
 	font-weight: 400;
-	padding: 1.3em 1.3em .1em 1.3em;
+	padding: 1.3em;
 	display: block;
 }
 .shader {
@@ -460,7 +460,7 @@ section#top {
 	background-size: cover;
 	height: 600px;
 	padding-top: 151px;
-	z-index: 5;
+	z-index: 0;
 	position: relative;
 }
 .white-color h1, .white-color h3 {
@@ -709,9 +709,7 @@ section#top{
 }
 
 .balance {
-	float: left;
-	margin: 0;
-	width: 30%;
+
 }
 .balance, .bets button, .player, div.practice_game {
 	position: relative;
@@ -719,7 +717,6 @@ section#top{
 .bottom_row, .top_row {
 	display: block;
 	height: 4em;
-	overflow: auto;
 }
 .balance .top_row .cell {
 	padding: 0.2em 0.4em;
@@ -733,10 +730,7 @@ section#top{
 	height: 100%;
 	padding: 0.1em;
 }
-.balance .headed {
-	display: block;
-	font-size: 0.8em;
-}
+
 .balance .headed, .payto label {
 	color: #888;
 	text-transform: uppercase;
@@ -762,10 +756,6 @@ section#top{
 	padding: 0.4em;
 }
 .presets {
-	float: left;
-	height: 7em;
-	margin: 0 2%;
-	width: 26%;
 }
 ul.bets {
 	margin: 0;
@@ -872,14 +862,14 @@ ul.bets {
 	-moz-border-left-colors: none;
 	-moz-border-right-colors: none;
 	-moz-border-top-colors: none;
-	background: #111 none repeat scroll 0 0;
-	border-color: #000 #333 #444;
+	background: #dddddd none repeat scroll 0 0;
+	border-color: #dddddd;
 	border-image: none;
 	border-style: solid;
 	border-width: 1px;
-	box-shadow: 0 1px 0 #000 inset;
+	box-shadow: 0 1px 0 #dddddd inset;
 	box-sizing: border-box;
-	color: #ccc;
+	color: #000;
 	font-size: 0.8em;
 	height: 100%;
 	letter-spacing: -0.1em;
@@ -901,7 +891,7 @@ ul.bets {
 .num_mines label {
 	padding: 0 0.5em 0 0.2em;
 }
-#start_game, .primary_btn {
+/*#start_game, .primary_btn {
 	background: #90c739 none repeat scroll 0 0;
 	border: 1px solid #52b000;
 	box-shadow: 0 2px 0 #225a00, 0 3px 1px #000, 0 1px 0 rgba(255, 255, 255, 0.2) inset;
@@ -918,7 +908,7 @@ ul.bets {
 	box-shadow: 0 1px 1px #000, 0 2px 4px #060 inset;
 	color: rgba(255, 255, 255, 0.5);
 	top: 0;
-}
+}*/
 .player_info {
 	border: 0.2em solid #444;
 }
@@ -928,4 +918,44 @@ ul.bets {
 
 .mb20{
 	margin-bottom:20px !important;
+}
+nav.navbar.bootsnav{
+	border-color: #fff;
+}
+nav.navbar li.dropdown ul.dropdown-menu {
+	border-top-color: #058672 !important;
+	border-bottom: 0px !important;
+}
+
+.balance .headerbalance {
+	display: block;
+	font-size: 0.8em;
+}
+.center_block{
+	margin: 0 auto;
+}
+.block_game{
+	border: 1px solid #dddddd;
+	display: block;
+	clear: both;
+	margin-top: 20px;
+	padding: 10px;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+}
+
+.standing_label {
+	font-size: 0.7em;
+	line-height: 1.5em;
+	margin: 0;
+	text-transform: uppercase;
+}
+.stand_next, .stand_stake {
+	font-size: 1.5em;
+	line-height: 1em;
+	margin: 0.12em 0 0;
+}
+.game_messages{
+	margin-top: 10px;
 }

@@ -29,13 +29,29 @@
     
   };
   
-    CellClicked = function (x, y) { 
+  
+  
+    InitMathStats = function (betAmount, numberOfMine)
+	{
+		// Khi nguoi choi lua chon so luong dat coc va so luong min thi goi ham nay
+		SendMessage ('jsHandler', 'InitStats', betAmount, numberOfMine);
+	}
 	
-	// This is and example of how to send message to the game
+	RevealAllMinePosition = function(minePositionStrings)
+	{
+	// string vidu: "(1x3),(4x4),(2x4)"		
+		SendMessage ('jsHandler', 'RevealAllMinePosition', minePositionStrings);
+	}
+  
+    CellClicked = function (x, y) 
+	{ 	
+	    // This is and example of how to send message to the game
 		var randomValue = 0.6*Math.random();
 		window.alert("clicked cell " + x + "x" + y + ", result: " + randomValue);
 		
 		SendClickResult(Math.round(randomValue)); 
+		
+		RevealAllMinePosition("(1x3),(4x4),(2x4)");
 	}
 	
 	SendClickResult = function(result)
@@ -43,6 +59,7 @@
 	    // clicked on mine, result = 1. clicked on normal cell, result = 0
 		SendMessage ('jsHandler', 'ClickResultListener', result);
 	}
+	
 
 </script>
 <script src="Release/UnityLoader.js"></script>

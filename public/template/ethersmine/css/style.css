@@ -761,6 +761,11 @@ ul.bets {
 	margin: 0;
 	padding: 0;
 }
+ul.board{
+	padding:0px;
+	margin: 0px auto;
+	width: 320px;
+}
 .io_menu ul, ul.addr_links, ul.bets, ul.board, ul.menu {
 	list-style: outside none none;
 }
@@ -935,7 +940,6 @@ nav.navbar li.dropdown ul.dropdown-menu {
 	margin: 0 auto;
 }
 .block_game{
-	border: 1px solid #dddddd;
 	display: block;
 	clear: both;
 	margin-top: 20px;
@@ -946,7 +950,7 @@ nav.navbar li.dropdown ul.dropdown-menu {
 }
 
 .standing_label {
-	font-size: 0.7em;
+	font-size: 14px;
 	line-height: 1.5em;
 	margin: 0;
 	text-transform: uppercase;
@@ -958,4 +962,219 @@ nav.navbar li.dropdown ul.dropdown-menu {
 }
 .game_messages{
 	margin-top: 10px;
+}
+
+div.practice_game::before {
+	background: #002d44 none repeat scroll 0 0;
+	border-radius: 0.25em;
+	color: #fff;
+	content: "Practice Game";
+	display: block;
+	font-size: 0.8em;
+	font-weight: 600;
+	left: 50%;
+	margin-left: -5em;
+	padding: 0.3em 0 0.2em;
+	position: absolute;
+	text-align: center;
+	text-transform: uppercase;
+	top: -1.2em;
+	width: 10em;
+	z-index: 2;
+}
+div.hidegame {
+	opacity: 0;
+	z-index: 15;
+}
+div.faded {
+	opacity: 0.5;
+	z-index: 15;
+}
+.game_left {
+	float: left;
+	height: 23em;
+	position: relative;
+	width: 26em;
+}
+.game_right {
+	margin-left: 26em;
+}
+.inplay p {
+	margin: 0.25em 0;
+}
+.inplay p span {
+	color: #fd0;
+	font-size: 1.4em;
+}
+.feed {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.messages {
+	border:1px solid #dddddd;
+	height: 16em;
+	margin: 0;
+	overflow-y: auto;
+}
+.messages input {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+	border-color: -moz-use-text-color -moz-use-text-color #888;
+	border-image: none;
+	border-style: none none solid;
+	border-width: 0 0 1px;
+	color: #ccc;
+	max-width: 100%;
+	width: 24em;
+}
+p.won, p.won a {
+	color: #fff;
+}
+.messages p {
+	font-size: 16px;
+	margin: 0;
+	padding: 0.6em 1em;
+}
+.player_error, .player_green, .player_info, .player_success {
+	padding: 0.8em 1.2em;
+}
+.messages p .secret_hash {
+	display: block;
+	font-size: 14px;
+	word-break: break-all;
+	font-style: italic;
+}
+.player_error {
+	border: 0.2em solid #711;
+}
+.player_success {
+	border: 0.2em solid #fd0;
+}
+.player_green {
+	border: 0.2em solid #488f2f;
+}
+.player_info {
+	border: 0.2em solid #444;
+}
+.intro_info {
+	margin: 2em auto;
+	max-width: 36em;
+	text-align: center;
+}
+.stuck {
+	background: #111 none repeat scroll 0 0;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 100%;
+	z-index: 505;
+}
+li.tile {
+	background: #ddd none repeat scroll 0 0;
+	border: 1px solid #000;
+	box-shadow: 0 1px 0 #fff inset, 0 1px 0 #222;
+	box-sizing: border-box;
+	float: left;
+	height: 60px;
+	margin: 1px;
+	position: relative;
+	width: 60px
+}
+li.active_tile, li.tile:active {
+	background: #ccc none repeat scroll 0 0;
+	box-shadow: 0 1px 1px #333 inset;
+}
+li.pressed {
+	background: rgba(0, 0, 0, 0) radial-gradient(ellipse at center center , #5ba825 0px, #488f2f 80%) repeat scroll 0 0;
+	box-shadow: 0 3px 3px #111 inset, 0 -1px 0 #444;
+	pointer-events: none;
+}
+li.bomb {
+	background: rgba(0, 0, 0, 0) radial-gradient(ellipse at center center , #ff5d00 0px, #a00 80%) repeat scroll 0 0;
+}
+p.bomb {
+	background: #a00 none repeat scroll 0 0;
+	border-color: #e22;
+}
+li.tile i {
+	color: #8d4;
+	font-size: 2em;
+	left: 50%;
+	margin-left: -0.7em;
+	margin-top: -0.48em;
+	position: absolute;
+	top: 50%;
+}
+li.tile span.tile_val {
+	color: #b8ff54;
+	display: block;
+	font-family: Oswald,sans-serif;
+	font-weight: 700;
+	letter-spacing: -0.05em;
+	position: relative;
+	text-align: center;
+	top: 50%;
+	transform: translateY(-50%);
+}
+li.reveal i {
+	color: #a00;
+}
+.line_btn, .won, li.bomb i {
+	color: #fff;
+}
+
+.control {
+	border:1px solid #dddddd;
+	margin: 0 0 0.5em;
+	padding: 1em;
+	height:75px;
+}
+.standings .col-left {
+	float: left;
+	width: 32%;
+}
+
+.standings .col-right {
+	float: left;
+	width: 68%;
+}
+button.cashout {
+	background: #e5ac00 none repeat scroll 0 0;
+	border: 1px solid #e58a00;
+	box-shadow: 0 2px 0 #a60, 0 3px 1px #000, 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+	color: #fff;
+	font-size: 1.3em;
+	padding: 0.54em 0.65em;
+	text-shadow: 0 -1px 0 #e58a00;
+}
+#start_playing, button.cashout {
+	float: right;
+	position: relative;
+	top: -2px;
+}
+
+div.practice_game {
+	border: 0.2em solid #002d44;
+	overflow: visible;
+}
+div.game {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border:1px solid #dddddd;
+	margin-bottom: 2px;
+	opacity: 1;
+	padding: 25px 10px;
+	transition: opacity 0.4s linear 0s;
+	z-index: 16;
+	min-height: 360px;
+}
+.balance, .bets button, .player, div.practice_game {
+	position: relative;
 }

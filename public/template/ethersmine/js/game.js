@@ -185,7 +185,4 @@ $(document).ready(function() {
         e.preventDefault(), $(".mine_options button").removeClass("active"), $(this).addClass("active")
     });
 
-
-
-
 });

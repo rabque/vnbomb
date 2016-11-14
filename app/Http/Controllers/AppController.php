@@ -6,15 +6,17 @@ use App\Http\Requests;
 use App\Models\FAMenu;
 use App\Models\Setting;
 use App\Models\Social;
-use Faker\Provider\Uuid;
-use Illuminate\Encryption\Encrypter;
 use Webpatser\Uuid\Uuid as UuidWeb;
+use Illuminate\Routing\Route;
 /**
  * Class AppController
  * @package App\Http\Controllers
  */
 class AppController extends Controller
 {
+    public $uuid = "";
+    public $cointrollerName='';
+    public $actionName='';
     /**
      * Create a new controller instance.
      *
@@ -34,8 +36,8 @@ class AppController extends Controller
 
         //unique cookie
         $ip = Utility::get_client_ip();
-        $uuid = UuidWeb::generate(5,$ip,UuidWeb::NS_DNS);
-        \View::share("uuid_name", Utility::generateRandomString());
+        $this->uuid = $uuid = sha1(UuidWeb::generate(5,$ip,UuidWeb::NS_DNS));
+
         \View::share("uuid", $uuid);
         \View::share("menuTop",$menuTop);
         \View::share("menuFooter",$menuFooter);

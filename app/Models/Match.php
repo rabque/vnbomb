@@ -28,86 +28,40 @@ class Match extends Model
 		return $this->hasMany('App\Models\MatchClick', 'matchID', 'matchID');
 	}
 
-	public function saveMatch($input){
-		$username = Utility::removeScripts($input["username"]);
-		$password = Utility::removeScripts($input["password"]);
-		$password = (empty($password))?$password:config("constants.DEFAULT_PASSWORD");
-		$uuid = Utility::removeScripts($input["uuid"]);
-		$clickMatch = Utility::removeScripts($input["clickMatch"]);
-		$numberOfMine =  (int)Utility::removeScripts($input["numberOfMine"]);
-		$betAmount = (int) Utility::removeScripts($input["betAmount"]);
-		$token = Utility::removeScripts($input["token"]);
-		$isWin = true;
-		$matchId = 0;
+	public function saveMatch($input, Player $player){
+		$numberOfMine =  $input["num_mines"];
+		$betAmount = $input["bet"];
 		try{
 			// create user if not exist
-			$player = Player::where("uuid",$input["uuid"])->get()->first();
-			\DB::beginTransaction();
-			if(empty($player)){
-
-				$player = new Player();
-				$player->username = $username;
-				$player->password = \Hash::make($password);
-				$player->uuid = $uuid;
-				$player->save();
-				$playerId = $uuid;
-			}else{
-				$playerId = $player->uuid;
-			}
-
-			if(!empty($playerId)){
-				$hash = UuidWeb::generate(5,$playerId.$token,UuidWeb::NS_DNS);
+			if(!empty($player)){
+				$hash = sha1(UuidWeb::generate(5,$player->uuid,UuidWeb::NS_DNS));
 				$match = $this->getMatchbyHash($hash);
-				$matchId = UuidWeb::generate(5,$token,UuidWeb::NS_DNS);;
 				if(empty($match)){
 					$match = new Match();
-					$match->matchID = $matchId;
-					$match->playerID = $playerId;
-					$match->betAmount = (!empty($betAmount))?$betAmount:0;
-					$match->isPracticeMatch = 1;
+					$match->game_hash = $hash;
+					$match->playerID = $player->uuid;
+					$match->betNumber = $betAmount;
+					$match->gametype = "practice";
 					$match->minePositions = $this->minePosition($numberOfMine);
-					$match->secrectString = UuidWeb::generate(5,encrypt(Uuid::uuid()),UuidWeb::NS_DNS);
-					$match->hash = $hash;
-					$match->clickHistory  = json_encode($clickMatch);
+					$match->secret = UuidWeb::generate(5,encrypt(Uuid::uuid()),UuidWeb::NS_DNS);
+					$match->next = 0;
+					$match->stake = 0;
+					$match->num_mines = $numberOfMine;
 					$match->save();
-					$matchId = $match->matchID;
-				}else{
-					$matchId = $match->matchID;
-					$minePositions = json_decode($match->minePositions,true);
-					$click = "({$clickMatch['x']}x{$clickMatch['y']})";
-					$isBomb = array_search($click,$minePositions);
-					if($isBomb !== false){
-						$isWin == false;
-						self::where("matchID",$matchId)->update(array("isPracticeMatch"=>2));
-					}
+					$match = $this->getMatchbyHash($match->game_hash);
 				}
-				if($isWin == true){
-					$exist = MatchClick::where("clickHistory",json_encode($clickMatch))
-										->where("matchID",$matchId)->get()->first();
-					if(empty($exist)){
-						$MatchClick = new MatchClick();
-						$MatchClick->matchID = $matchId;
-						$MatchClick->clickHistory = json_encode($clickMatch);
-						$MatchClick->save();
-					}
-				}
-
 			}
-
 			\DB::commit();
 		}catch(\Exception $e){
 			\DB::rollback();
 			throw new \Exception($e->getMessage(). $e->getFile(). $e->getLine(),500);
 		}
-		$data = array();
-		if(!empty($matchId)){
-			$data = self::with("matchclick")->where("matchID",$matchId)->get()->first();
-		}
-		return $data;
+
+		return $match;
 	}
 
 	public function getMatchbyHash($hash = ""){
-		return self::where("hash",$hash)->get()->first();
+		return self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines')->where("game_hash",$hash)->get()->first();
 	}
 
 	public function minePosition($number = 1){

@@ -52,4 +52,29 @@ class ApiController extends AppController
 
         return response()->json($data);
     }
+
+
+
+    public function newgame(Request $request){
+        $requestParams = ['bd','bet','num_mines','player_hash'];
+        $input = $request->only($requestParams);
+
+        foreach($requestParams as $r){
+            if(!isset($input[$r])){
+                throw new \Exception("Invalid data",500);
+            }
+        }
+
+
+        $player = (new Player())->getPlayer($input["player_hash"]);
+        //save new game
+        $match = new Match();
+        $newMatch = $match->saveMatch($input,$player);
+        if(!empty($newMatch)){
+            $newMatch = $newMatch->toArray();
+            $newMatch["status"] = "success";
+        }
+        return response()->json($newMatch);
+    }
+
 }

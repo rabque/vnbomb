@@ -1,8 +1,12 @@
 <?php
 namespace App\Http\Controllers;
+use App\Common\Utility;
 use App\Models\Article;
 use App\Models\Match;
+use App\Models\Player;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use SEO;
 /**
  * Class ArticlesController
@@ -26,12 +30,21 @@ class GamesController extends AppController
 
     public function index($slug = "")
     {
-
+        if(empty($this->request->get("uuid"))){
+            throw new \Exception("Page not found",404);
+        }
+        $uuid = $this->request->get("uuid");
+        if($uuid != $this->uuid){
+            throw new \Exception("Page not found",404);
+        }
+        $player = new Player();
+        $newPlayer = $player->savePlayer(["uuid"=>$this->uuid]);
         SEO::setTitle("Games");
         SEO::setDescription("Games");
         SEO::opengraph()->setUrl(url("/games"));
         SEO::opengraph()->addProperty('type', 'articles');
         return view('games.index',[
+            "uuid_name" => $newPlayer->username
         ]);
 
     }
@@ -47,5 +60,6 @@ class GamesController extends AppController
             "numberOfMine" => $numberOfMine
         ]);
     }
+
 
 }

@@ -19,3 +19,4 @@ use Illuminate\Http\Request;
 
 Route::post('match', "ApiController@match")->middleware('api');
 Route::post('game/play', "GamesController@play")->middleware('api');
+Route::post('game/newgame', "ApiController@newgame")->middleware('api');

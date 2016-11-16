@@ -12,5 +12,7 @@ return [
     "IMG_WITH"  => "300",
     "IMG_HEIGHT"  => "300",
     "POSITION_MENU" => array(1=>"Top menu", 2=>"Bottom menu",3 => "left menu", 4=>"Right menu"),
-    "DEFAULT_PASSWORD" => "123456"
+    "DEFAULT_PASSWORD" => "123456",
+    "POINT_BIT" => 0.000001,
+    "POINT_BIT_VIEW" => 1000000,
 ];

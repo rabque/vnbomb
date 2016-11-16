@@ -201,3 +201,22 @@ input[name='sort_numb']{
 #example1.dataTable IMG,.list-image{
 	max-width: 150px;
 }
+.point_list{
+	display: block;
+	width: 490px;
+}
+.point_list UL LI{
+	float: left;
+	list-style:none;
+	height: 60px;
+	margin: 5px;
+	width: 80px;
+}
+.point_list UL LI input{
+	height: 60px;
+	width: 80px;
+}
+.point_list UL{
+	margin-bottom: 10px;
+	clear: both;
+}

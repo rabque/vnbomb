@@ -318,7 +318,7 @@ Game.prototype.message = function(e, t) {
         radius: 6,
         color: "#000"
     }), e.addClass("active_tile"), busy = !0, $.ajax({
-        url: BASE_URL + "/game/checkboard.php",
+        url: BASE_URL + "/api/game/checkboard",
         data: "game_hash=" + t.game_hash + "&guess=" + a + "&v04=1",
         type: "POST",
         dataType: "json",

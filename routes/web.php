@@ -10,6 +10,9 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+
+Route::auth();
+
 Route::get('/', function(App\Models\AppModel $model)
 {
     $model->setSeoDefault();
@@ -53,8 +56,6 @@ if (!in_array($pathName,$notRoute))
 }
 
 
-
-Route::auth();
 
 /* ================== Homepage + Admin Routes ================== */
 

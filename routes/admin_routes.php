@@ -106,4 +106,8 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_ROOT']], f
 	/* ================== Notes ================== */
 	Route::resource(config('laraadmin.adminRoute') . '/notes', 'LA\NotesController');
 	Route::get(config('laraadmin.adminRoute') . '/note_dt_ajax', 'LA\NotesController@dtajax');
+
+	/* ================== Socials ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/points', 'LA\PointsController');
+	Route::get(config('laraadmin.adminRoute') . '/point_dt_ajax', 'LA\PointsController@dtajax');
 });

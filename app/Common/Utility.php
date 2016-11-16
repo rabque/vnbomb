@@ -116,6 +116,24 @@ class Utility {
         return $flag;
     }
 
+
+    public static function checkInt($number = 0, $isSendExceptions = true)
+    {
+        $flag = true;
+        if (empty($number)) {
+            return false;
+        }
+        if (filter_var($number, FILTER_VALIDATE_INT) === 0 || filter_var($number, FILTER_VALIDATE_INT) === false) {
+            if ($isSendExceptions == true) {
+                throw new \Exception("$number not int", 500);
+            } else {
+                $flag = false;
+            }
+        }
+        return $flag;
+    }
+
+
     public static function removeSpacesString($string)
     {
         if (empty($string)) {

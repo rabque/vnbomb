@@ -34,18 +34,26 @@ class Match extends Model
 		try{
 			// create user if not exist
 			if(!empty($player)){
-				$hash = sha1(UuidWeb::generate(5,$player->uuid,UuidWeb::NS_DNS));
-				$match = $this->getMatchbyHash($hash);
+				$hash = sha1(UuidWeb::generate(5,$player->uuid.time(),UuidWeb::NS_DNS));
+				$match = null;//$this->getMatchbyHash($hash);
 				if(empty($match)){
+					//Points
+					$points = Point::getPointByGameType($numberOfMine);
+					if(empty($points)){
+						throw new \Exception("Invalid point game type",500);
+					}
+
+
 					$match = new Match();
 					$match->game_hash = $hash;
 					$match->playerID = $player->uuid;
+					$match->bet = $betAmount;
 					$match->betNumber = $betAmount;
 					$match->gametype = "practice";
 					$match->minePositions = $this->minePosition($numberOfMine);
 					$match->secret = UuidWeb::generate(5,encrypt(Uuid::uuid()),UuidWeb::NS_DNS);
-					$match->next = 0;
-					$match->stake = 0;
+					$match->next = $betAmount * ($points["point"][1]/100);
+					$match->stake = $betAmount;
 					$match->num_mines = $numberOfMine;
 					$match->save();
 					$match = $this->getMatchbyHash($match->game_hash);

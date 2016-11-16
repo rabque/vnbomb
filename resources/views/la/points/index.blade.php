@@ -1,14 +1,14 @@
 @extends("la.layouts.app")
 
-@section("contentheader_title", "Socials")
-@section("contentheader_description", "Socials listing")
-@section("section", "Socials")
+@section("contentheader_title", "Points")
+@section("contentheader_description", "Points listing")
+@section("section", "Points")
 @section("sub_section", "Listing")
-@section("htmlheader_title", "Socials Listing")
+@section("htmlheader_title", "Points Listing")
 
 @section("headerElems")
-@la_access("Socials", "create")
-	<button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Social</button>
+@la_access("Points", "create")
+	<button class="btn btn-success btn-sm pull-right" data-toggle="modal" data-target="#AddModal">Add Point</button>
 @endla_access
 @endsection
 
@@ -45,24 +45,30 @@
 	</div>
 </div>
 
-@la_access("Socials", "create")
+@la_access("Points", "create")
 <div class="modal fade" id="AddModal" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Add Social</h4>
+				<h4 class="modal-title" id="myModalLabel">Add Point</h4>
 			</div>
-			{!! Form::open(['action' => 'LA\SocialsController@store', 'id' => 'social-add-form']) !!}
+			{!! Form::open(['action' => 'LA\PointsController@store', 'id' => 'point-add-form']) !!}
 			<div class="modal-body">
 				<div class="box-body">
-                    @la_form($module)
-					
-					{{--
-					@la_input($module, 'name')
-					@la_input($module, 'url')
-					@la_input($module, 'icon')
-					--}}
+
+					<div class="form-group">
+						<label for="point">Point* : %</label>
+						<div class="point_list">
+							<ul>
+						<?php for($i=1;$i<25;$i++){ ?>
+						<li><input type="number" class="form form-control" name="point[{{ $i  }}]" value="0"></li>
+						<?php } ?>
+							</ul>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					@la_input($module, 'game_type')
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -88,7 +94,7 @@ $(function () {
 	var table = $("#example1").DataTable({
 		processing: true,
         serverSide: true,
-        ajax: "{{ url(config('laraadmin.adminRoute') . '/social_dt_ajax') }}",
+        ajax: "{{ url(config('laraadmin.adminRoute') . '/point_dt_ajax') }}",
 		language: {
 			lengthMenu: "_MENU_",
 			search: "_INPUT_",
@@ -98,7 +104,7 @@ $(function () {
 		columnDefs: [ { orderable: false, targets: [-1] }],
 		@endif
 	});
-	$("#social-add-form").validate({
+	$("#point-add-form").validate({
 		
 	});
 });

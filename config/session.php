@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'lifetime' => 480,
+    'lifetime' => 120,
 
     'expire_on_close' => true,
 
@@ -148,7 +148,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', true),
+    'domain' => null,// env('SESSION_DOMAIN', true),
 
     /*
     |--------------------------------------------------------------------------

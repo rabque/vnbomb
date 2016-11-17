@@ -21,3 +21,4 @@ Route::post('match', "ApiController@match")->middleware('api');
 Route::post('game/play', "GamesController@play")->middleware('api');
 Route::post('game/newgame', "ApiController@newgame")->middleware('api');
 Route::post('game/checkboard', "ApiController@checkboard")->middleware('api');
+Route::post('game/cashout', "ApiController@cashout")->middleware('api');

@@ -278,7 +278,7 @@ Game.prototype.message = function(e, t) {
     e.jqel.find("button.cashout").attr("disabled", "disabled").spin();
     var t = 0;
     $.ajax({
-        url: BASE_URL + "/game/cashout.php",
+        url: BASE_URL + "/api/game/cashout",
         data: "game_hash=" + e.game_hash,
         type: "POST",
         dataType: "json",
@@ -287,21 +287,7 @@ Game.prototype.message = function(e, t) {
         }
     }).done(function(a) {
         if ("success" == a.status) {
-            ga("send", "event", "Game", "Cash Out", e.gametype, Math.round(1e6 * a.win), {
-                metric1: new Date - t,
-                metric2: Math.round(1e6 * e.bet),
-                metric3: Math.round(1e6 * a.win),
-                dimension1: e.num_mines + " Mine" + (1 == e.num_mines ? "" : "s"),
-                dimension2: e.gametype.charAt(0).toUpperCase() + e.gametype.slice(1),
-                dimension3: e.guesses,
-                location: "/play/",
-                page: "/play/",
-                title: "Game"
-            }), ga("send", "event", "Speed", "Cashout Game", e.gametype, new Date - t, {
-                location: "/play/",
-                page: "/play/",
-                title: "Game"
-            }), updateBalance(parseFloat(a.win)), e.jqel.find(".inplay p").html("Won: <span>Ƀ" + a.win + "</span>"), e.jqel.find(".cashout").hide(), e.message(a.message, "won"), e.message("Secret: " + a.mines + "-" + a.random_string), e.message('Share this game: <input type="text" value="'+ BASE_URL +'/s/' + a.game_id + "/" + a.random_string + '/">');
+            updateBalance(parseFloat(a.win)), e.jqel.find(".inplay p").html("Won: <span>Ƀ" + a.win + "</span>"), e.jqel.find(".cashout").hide(), e.message(a.message, "won"), e.message("Secret: " + a.mines + "-" + a.random_string), e.message('Share this game: <input type="text" value="'+ BASE_URL +'/s/' + a.game_id + "/" + a.random_string + '/">');
             var s = a.mines.split("-");
             for (i = 0; i < s.length; i++) e.jqel.find('li[data-tile="' + s[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>')
         } else "error" == a.status && e.message(a.message, "error")

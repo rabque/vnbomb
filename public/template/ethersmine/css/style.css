@@ -1031,7 +1031,7 @@ div.faded {
 	width: 24em;
 }
 p.won, p.won a {
-	color: #fff;
+	color: #488f2f;
 }
 .messages p {
 	font-size: 16px;
@@ -1104,7 +1104,7 @@ p.bomb {
 li.tile i {
 	color: #8d4;
 	font-size: 2em;
-	left: 50%;
+	left: 60%;
 	margin-left: -0.7em;
 	margin-top: -0.48em;
 	position: absolute;

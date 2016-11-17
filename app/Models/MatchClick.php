@@ -39,9 +39,11 @@ class MatchClick extends Model
 			$stake = $match["stake"];
 			$lastNext = 1;
 			$numberNext = 1;
+			$numberLastNext = 0;
 			if(!empty($lastClick)){
 				foreach($lastClick as $value){
-					$stake = $stake + $value->stake;
+					//$stake = $stake + $value->stake;
+					$numberLastNext = $numberLastNext + $value->next;
 					$lastNext = $numberNext;
 					$numberNext++;
 				}
@@ -68,13 +70,17 @@ class MatchClick extends Model
 			}
 			$matchClick->save();
 			$newmatchClick = $this->getMatchClick($matchClick->id,$isWin);
+
+			$totalNext = $numberLastNext+$match["stake"]+$next;
+
 			if($isWin == false){
 				$newmatchClick["bombs"] = implode("-",$postionBomb);
 				$newmatchClick["game_id"] = $match["id"];
 				$secret = implode("-",$postionBomb) . "-" . $random_string;
 				Match::where("game_hash",$match["game_hash"])->update(["secret_click"=>$secret,"status"=>1,"random_string" =>$random_string]);
-
 				//
+			}else{
+				Match::where("game_hash",$match["game_hash"])->update(["stake"=>$totalNext]);
 			}
 			\DB::commit();
 			return $newmatchClick;

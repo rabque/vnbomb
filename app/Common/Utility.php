@@ -275,7 +275,6 @@ class Utility {
 
 
     public static function calcNextPoint($stake = 0,$percent = 0){
-        bcscale(9);
         $percent = $percent/100;
         $value =  $stake*$percent;
         return $value;

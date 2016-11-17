@@ -313,16 +313,7 @@ Game.prototype.message = function(e, t) {
         }
     }).done(function(n) {
         if (busy = !1, e.spin(!1), e.removeClass("active_tile"), t.betNumber++, "success" == n.status) {
-            if (t.guesses++, "real" == t.gametype && (ga("send", "event", "Game", "Guess", t.guesses, a, {
-                    metric1: new Date - s,
-                    location: "/play/",
-                    page: "/play/",
-                    title: "Game"
-                }), ga("send", "event", "Speed", "Guess", t.guesses, new Date - s, {
-                    location: "/play/",
-                    page: "/play/",
-                    title: "Game"
-                })), "bitcoins" == n.outcome && (t.change_stake(1e6 * n.stake), animate_val(t.jqel.find(".next"), 1e6 * n.next.toFixed(6)), sound_enabled && sound.play("win"), t.message(n.message, "find"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed").html('<span class="tile_val">+' + abbrNum(1e6 * n.change) + "</span>")), "bomb" == n.outcome) {
+            if (t.guesses++, "real" == t.gametype, "bitcoins" == n.outcome && (t.change_stake(1e6 * n.stake), animate_val(t.jqel.find(".next"), 1e6 * n.next.toFixed(6)), sound_enabled && sound.play("win"), t.message(n.message, "find"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed").html('<span class="tile_val">+' + abbrNum(1e6 * n.change) + "</span>")), "bomb" == n.outcome) {
                 t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="glyphicon glyphicon-certificate"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="https://satoshimines.com/s/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
                 var o = n.bombs.split("-");
                 for (i = 0; i < o.length; i++) t.jqel.find('li[data-tile="' + o[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>');
@@ -381,7 +372,6 @@ $(document).ready(function() {
             show_error("There was a problem updating your player name. Please contact the admin if this keeps happening.")
         })
     }), $(".bets button").bind("click", presentHandler), $("#start_game").click(function() {
-        console.log("asfd");
         $(this).attr("disabled", "disabled").spin();
         var e = parseFloat(parseInt($("#bet").val().replace(/[^0-9]+/g, "")) / 1e6).toFixed(6),
             t = $(".mine_options button.active").text().replace(/[^0-9]+/g, "");

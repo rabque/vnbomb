@@ -70,7 +70,7 @@ class Match extends Model
 	}
 
 	public function getMatchbyHash($hash = "",$unsetMine = true){
-		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status')->where("game_hash",$hash)->get()->first();
+		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status','playerID')->where("game_hash",$hash)->get()->first();
 
 		if(!empty($data)){
 			$data->next = Utility::formatNumber($data->next) ;

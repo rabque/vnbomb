@@ -113,7 +113,8 @@ class ApiController extends AppController
             $match->update(["status"=>2,"random_string" => $random_string]);
             $response["status"] =  "success";
             $response["win"] =  1;
-            $stake = $match->stake;
+            $stake =  Utility::convertToSatoshifromBTC($match->stake);
+            $response["stake"]  = $stake;
             $response["mines"] =  implode("-",$postionBomb);
             $response["message"] =  "Cashed out $stake practice bits.";
             $response["game_id"] =  $match->id;

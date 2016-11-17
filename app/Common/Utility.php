@@ -303,7 +303,7 @@ class Utility {
     }
 
     public static function convertToSatoshifromBTC($value){
-        $value =  bcmul($value, 1000000, 8 );
+        $value =  $value*1000000;
         return $value;
     }
 

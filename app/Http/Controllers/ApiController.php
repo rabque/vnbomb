@@ -70,15 +70,14 @@ class ApiController extends AppController
             if(empty($match)){
                 throw new \Exception("Invalid game hash ",500);
             }
+            $match = $match->toArray();
             if($match["status"] == 0){
                 $player = (new Player())->getPlayer($match["playerID"]);
-                $match = $match->toArray();
-
                 $matchClick = new MatchClick();
                 $clickdata = $matchClick->saveClick($input,$match);
                 if(!empty($clickdata)){
                     $clickdata["status"] = "success";
-                    $bit = Utility::formatNumber($clickdata["next"]);
+                    $bit = Utility::bcdiv_cust(Utility::formatNumber($clickdata["next"]) * config("constants.POINT_BIT_VIEW"),1);
                     $clickdata["message"] = "You found <span>$bit bits</span> in tile {$input['guess']}";
                 }
             }else{
@@ -93,6 +92,38 @@ class ApiController extends AppController
         }
 
         return response()->json($clickdata);
+    }
+
+    public function cashout(Request $request){
+        $requestParams = ['game_hash'];
+        $input = $request->only($requestParams);
+
+        if(empty($input["game_hash"])){
+            throw new \Exception("Invalid data",500);
+        }
+        $match = new Match();
+        $match = $match->getMatchbyHash($input["game_hash"],false);
+        if(empty($match)){
+            throw new \Exception("Invalid game hash ",500);
+        }
+        $response = [];
+        if($match->status != 2){
+            $postionBomb = json_decode($match->minePositions,true);
+            $random_string = str_random(6);
+            $match->update(["status"=>2,"random_string" => $random_string]);
+            $response["status"] =  "success";
+            $response["win"] =  1;
+            $stake = $match->stake;
+            $response["mines"] =  implode("-",$postionBomb);
+            $response["message"] =  "Cashed out $stake practice bits.";
+            $response["game_id"] =  $match->id;
+            $response["random_string"] =  $random_string;
+
+        }else{
+            $response["status"] =  "error";
+            $response["message"] =  "Invalid cash out game ";
+        }
+        return response()->json($response);
     }
 
 }

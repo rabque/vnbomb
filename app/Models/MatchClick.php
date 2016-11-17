@@ -70,9 +70,9 @@ class MatchClick extends Model
 			$newmatchClick = $this->getMatchClick($matchClick->id,$isWin);
 			if($isWin == false){
 				$newmatchClick["bombs"] = implode("-",$postionBomb);
-				$newmatchClick["game_id"] = $input["game_hash"];
+				$newmatchClick["game_id"] = $match["id"];
 				$secret = implode("-",$postionBomb) . "-" . $random_string;
-				Match::where("game_hash",$match["game_hash"])->update(["secret_click"=>$secret,"status"=>1]);
+				Match::where("game_hash",$match["game_hash"])->update(["secret_click"=>$secret,"status"=>1,"random_string" =>$random_string]);
 
 				//
 			}

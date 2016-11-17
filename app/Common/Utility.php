@@ -277,15 +277,21 @@ class Utility {
     public static function calcNextPoint($stake = 0,$percent = 0){
         //$value = bcdiv(bcmul($stake,$percent),100);
         //$value = rtrim($value,0);
-        $value = ($stake*$percent)/100;
+        $value =  ($stake*$percent)/100;
         return $value;
     }
 
     public static function formatNumber($number){
         $number = rtrim($number,0);
         //$number = floor($number);
-        return doubleval($number);
+        $number = doubleval($number);
+        $number = round($number,strlen($number)-1);
+        return $number;
     }
-
+    public static function bcdiv_cust( $first, $second, $scale = 0 )
+    {
+        $res = $first / $second;
+        return round( $res, $scale );
+    }
 
 }

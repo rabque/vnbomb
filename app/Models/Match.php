@@ -30,8 +30,9 @@ class Match extends Model
 
 	public function saveMatch($input, Player $player){
 		$numberOfMine =  $input["num_mines"];
-		$betAmount = $input["bet"];
+		$betAmount =(string)$input["bet"];
 		try{
+			\DB::beginTransaction();
 			// create user if not exist
 			if(!empty($player)){
 				$hash = sha1(UuidWeb::generate(5,$player->uuid.time(),UuidWeb::NS_DNS));
@@ -52,7 +53,7 @@ class Match extends Model
 					$match->gametype = "practice";
 					$match->minePositions = $this->minePosition($numberOfMine);
 					$match->secret = UuidWeb::generate(5,encrypt(Uuid::uuid()),UuidWeb::NS_DNS);
-					$match->next = $betAmount * ($points["point"][1]/100);
+					$match->next = Utility::calcNextPoint($betAmount,$points["point"][1]);
 					$match->stake = $betAmount;
 					$match->num_mines = $numberOfMine;
 					$match->save();
@@ -68,27 +69,38 @@ class Match extends Model
 		return $match;
 	}
 
-	public function getMatchbyHash($hash = ""){
-		return self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines')->where("game_hash",$hash)->get()->first();
+	public function getMatchbyHash($hash = "",$unsetMine = true){
+		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status')->where("game_hash",$hash)->get()->first();
+
+		if(!empty($data)){
+			$data->next = Utility::formatNumber($data->next) ;
+			$data->bet = Utility::formatNumber($data->next) ;
+			$data->stake = Utility::formatNumber($data->stake) ;
+			$data->betNumber = Utility::formatNumber($data->betNumber) ;
+			if($unsetMine == true){
+				unset($data->minePositions);
+			}
+		}
+		return $data;
+
 	}
 
 	public function minePosition($number = 1){
-		$x = $y = array(0,1,2,3,4);
 		$position = array();
-		foreach($x as $k=>$v){
-			foreach($y as $v2){
-				$position[] = "($v"."x"."$v2)";
-			}
+		$range = range(1, 25);
+		shuffle($range);
+		foreach ($range as $value) {
+			$position[$value] = $value;
 		}
-
-		shuffle($position);
-
 		$rand_keys = array_rand($position,$number);
 		if(!is_array($rand_keys)) $rand_keys = array($rand_keys);
 		$data = array();
 		foreach($rand_keys as $value){
-			$data[] = $position[$value];
-			unset($position[$value]);
+			if(!empty($position[$value])){
+				$data[] = $position[$value];
+				unset($position[$value]);
+			}
+
 		}
 		return json_encode($data,true);
 	}

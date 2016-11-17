@@ -24,39 +24,6 @@ class ApiController extends AppController
         parent::__construct();
     }
 
-    public function match(Request $request)
-    {
-
-        $input = $request->only(['uuid','username', 'password','clickMatch','betAmount','numberOfMine','token']);
-        $match = new Match();
-        $newMatch = $match->saveMatch($input);
-        $data = array();
-        if($newMatch->isPracticeMatch == 1){
-            $data["success"] = true;
-        }else{
-            $data["success"] = false;
-            $minePositions = json_decode($newMatch->minePositions,true);
-            $minePositions = implode(",",$minePositions);
-            $data["minePositions"] = $minePositions;
-            $data["secrectString"] = $newMatch->secrectString;
-            $data["hash"] = $newMatch->hash;
-        }
-        $mineClick = array();
-        if(!empty($newMatch->matchclick)){
-            foreach($newMatch->matchclick as $click){
-                $position = json_decode($click->clickHistory,true);
-                $position = (!empty($position))?"{$position['x']},{$position['y']}":"";
-                $mineClick[] = array("point"=>$click->point,"position"=>$position);
-            }
-        }
-        $data["click"] = $mineClick;
-        $data["betAmount"] = $newMatch->betAmount;
-
-        return response()->json($data);
-    }
-
-
-
     public function newgame(Request $request){
         $requestParams = ['bd','bet','num_mines','player_hash'];
         $input = $request->only($requestParams);
@@ -66,8 +33,13 @@ class ApiController extends AppController
                 throw new \Exception("Invalid data",500);
             }
         }
-
-        if(Utility::checkFloat($input["bet"],false) ){
+        if(Utility::checkFloat($input["bet"],false) == false){
+            $newMatch["status"] = "error";
+            $newMatch["message"] = "Invalid bet value";
+        }else if($input["bet"] > 1.000000){
+            $newMatch["status"] = "error";
+            $newMatch["message"] = "The maximum bet is 1,000,000 bits.";
+        }else{
             $player = (new Player())->getPlayer($input["player_hash"]);
             //save new game
             $match = new Match();
@@ -76,11 +48,7 @@ class ApiController extends AppController
                 $newMatch = $newMatch->toArray();
                 $newMatch["status"] = "success";
             }
-        }else{
-            $newMatch["status"] = "error";
-            $newMatch["message"] = "Invalid bet value";
         }
-
         return response()->json($newMatch);
     }
 
@@ -98,20 +66,26 @@ class ApiController extends AppController
 
             //save new game
             $match = new Match();
-            $match = $match->getMatchbyHash($input["game_hash"]);
+            $match = $match->getMatchbyHash($input["game_hash"],false);
             if(empty($match)){
                 throw new \Exception("Invalid game hash ",500);
             }
-            $player = (new Player())->getPlayer($match["playerID"]);
-            $match = $match->toArray();
+            if($match["status"] == 0){
+                $player = (new Player())->getPlayer($match["playerID"]);
+                $match = $match->toArray();
 
-            $matchClick = new MatchClick();
-            $clickdata = $matchClick->saveClick($input,$match);
-            if(!empty($clickdata)){
-                $clickdata["status"] = "success";
-                $bit = $clickdata["change"]* config("constants.POINT_BIT_VIEW");
-                $clickdata["message"] = "You found <span>$bit bits</span> in tile {$input['guess']}";
+                $matchClick = new MatchClick();
+                $clickdata = $matchClick->saveClick($input,$match);
+                if(!empty($clickdata)){
+                    $clickdata["status"] = "success";
+                    $bit = Utility::formatNumber($clickdata["next"]);
+                    $clickdata["message"] = "You found <span>$bit bits</span> in tile {$input['guess']}";
+                }
+            }else{
+                $clickdata["status"] = "error";
+                $clickdata["message"] = "You cannot make any more guesses. This game is already over";
             }
+
 
         }else{
             $clickdata["status"] = "error";

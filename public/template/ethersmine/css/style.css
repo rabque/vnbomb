@@ -1178,3 +1178,9 @@ div.game {
 .balance, .bets button, .player, div.practice_game {
 	position: relative;
 }
+p.error {
+	color: #f11;
+}
+p.find span {
+	color: #488f2f;
+}

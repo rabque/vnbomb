@@ -198,7 +198,7 @@ function look_for_deposits(e) {
                 }), $(".modal_load .icon").html('<span class="num_icon">+' + Math.round(1e6 * n).toLocaleString("en-US") + "</span>"), $(".modal_load .content").html('<p>You deposited <span class="big">Ƀ' + n.replace(/0+$/g, "") + '</span>. Exactly <span class="big">' + Math.round(1e6 * n).toLocaleString("en-US") + '</span> bits have been added to your balance.</p><button class="line_btn line_btn_green close_all">OK</button>')
             } else 6 > e ? (e++, balance_ping_timer = setTimeout(function() {
                 look_for_deposits(e)
-            }, 500 * Math.pow(e, 2))) : (looking_for_deposits = !1, $(".modal_load .icon").html('<span style="color:#d00;"><i class="icon-alert"></i></span>'), $(".modal_load .content").html('<p>Satoshi Mines could not find any new deposits.</p><p><button class="line_btn line_btn_red close_all">Cancel</button><button class="line_btn line_btn_green refresh_bal">Look Again</button>'));
+            }, 500 * Math.pow(e, 2))) : (looking_for_deposits = !1, $(".modal_load .icon").html('<span style="color:#d00;"><i class="glyphicon glyphicon-certificate"></i></span>'), $(".modal_load .content").html('<p>Satoshi Mines could not find any new deposits.</p><p><button class="line_btn line_btn_red close_all">Cancel</button><button class="line_btn line_btn_green refresh_bal">Look Again</button>'));
             put_balance(a.balance)
         } else "error" == a.status && (close_all(), show_error("There was a problem refreshing your balance: " + a.message))
     }).fail(function(e) {
@@ -301,9 +301,9 @@ Game.prototype.message = function(e, t) {
                 location: "/play/",
                 page: "/play/",
                 title: "Game"
-            }), updateBalance(parseFloat(a.win)), e.jqel.find(".inplay p").html("Won: <span>Ƀ" + a.win + "</span>"), e.jqel.find(".cashout").hide(), e.message(a.message, "won"), e.message("Secret: " + a.mines + "-" + a.random_string), e.message('Share this game: <input type="text" value="https://satoshimines.com/s/' + a.game_id + "/" + a.random_string + '/">');
+            }), updateBalance(parseFloat(a.win)), e.jqel.find(".inplay p").html("Won: <span>Ƀ" + a.win + "</span>"), e.jqel.find(".cashout").hide(), e.message(a.message, "won"), e.message("Secret: " + a.mines + "-" + a.random_string), e.message('Share this game: <input type="text" value="'+ BASE_URL +'/s/' + a.game_id + "/" + a.random_string + '/">');
             var s = a.mines.split("-");
-            for (i = 0; i < s.length; i++) e.jqel.find('li[data-tile="' + s[i] + '"]').addClass("reveal").html('<i class="icon-alert"></i>')
+            for (i = 0; i < s.length; i++) e.jqel.find('li[data-tile="' + s[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>')
         } else "error" == a.status && e.message(a.message, "error")
     }).fail(function() {
         alert("jqxhr failed")
@@ -337,9 +337,9 @@ Game.prototype.message = function(e, t) {
                     page: "/play/",
                     title: "Game"
                 })), "bitcoins" == n.outcome && (t.change_stake(1e6 * n.stake), animate_val(t.jqel.find(".next"), 1e6 * n.next.toFixed(6)), sound_enabled && sound.play("win"), t.message(n.message, "find"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed").html('<span class="tile_val">+' + abbrNum(1e6 * n.change) + "</span>")), "bomb" == n.outcome) {
-                t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="icon-alert"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="https://satoshimines.com/s/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
+                t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="glyphicon glyphicon-certificate"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="https://satoshimines.com/s/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
                 var o = n.bombs.split("-");
-                for (i = 0; i < o.length; i++) t.jqel.find('li[data-tile="' + o[i] + '"]').addClass("reveal").html('<i class="icon-alert"></i>');
+                for (i = 0; i < o.length; i++) t.jqel.find('li[data-tile="' + o[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>');
                 sound_enabled && sound.play("lose")
             }
         } else "error" == n.status && t.message(n.message, "error")

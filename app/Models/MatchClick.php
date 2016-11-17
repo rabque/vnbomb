@@ -50,14 +50,16 @@ class MatchClick extends Model
 			}else{
 				$numberNext = 2;
 			}
-			$next = ($match["stake"] * ($points["point"][$numberNext]/100));
+
+			$next = Utility::calcNextPoint($match["default_stake"],$points["point"][$numberNext]);
+			//$numberLastNext = (!empty($numberLastNext))?$numberLastNext:$next;
 			$random_string = str_random(6);
 			$matchClick = new MatchClick();
 			$matchClick->matchID = $input["game_hash"];
 			$matchClick->guess = $click;
-			$matchClick->stake = $stake + $next;
+			$matchClick->stake = $match["default_stake"] + $numberLastNext + $next;
 			$matchClick->next = $next;
-			$matchClick->change = ($match["stake"] * ($points["point"][$lastNext]/100));
+			$matchClick->change = Utility::calcNextPoint($match["default_stake"],$points["point"][$lastNext]);
 			$matchClick->random_string = $random_string;
 
 			$postionBomb = json_decode($match["minePositions"],true);
@@ -94,9 +96,9 @@ class MatchClick extends Model
 	public function getMatchClick($id,$usset = true){
 		$data = self::select("guess","outcome","stake","next","change","random_string")->where("id",$id)->get()->first();
 		if(!empty($data)){
-			$data->next = Utility::formatNumber($data->next) ;
-			$data->change = Utility::formatNumber($data->next) ;
-			$data->stake = Utility::formatNumber($data->stake) ;
+			$data->next = Utility::formatBTC($data->next) ;
+			$data->change = Utility::formatBTC($data->next) ;
+			$data->stake = Utility::formatBTC($data->stake) ;
 			if($usset == true){
 				unset($data->game_id);
 				unset($data->random_string);

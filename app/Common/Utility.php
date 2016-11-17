@@ -275,17 +275,48 @@ class Utility {
 
 
     public static function calcNextPoint($stake = 0,$percent = 0){
-        //$value = bcdiv(bcmul($stake,$percent),100);
-        //$value = rtrim($value,0);
-        $value =  ($stake*$percent)/100;
+        bcscale(9);
+        $percent = $percent/100;
+        $value =  $stake*$percent;
+        return $value;
+    }
+
+    public static function exp2dec($number) {
+        $number = rtrim($number,0);
+        preg_match('/(.*)E-(.*)/', str_replace(".", "", $number), $matches);
+        $num = "0.";
+        if(!empty($matches[2])){
+            while ($matches[2] > 0) {
+                $num .= "0";
+                $matches[2]--;
+            }
+            return $num . $matches[1];
+        }else{
+            return $number;
+        }
+
+    }
+
+    public static function convertToBTCFromSatoshi($value){
+        $value =  bcdiv(intval($value), 100000000, 8 );
+        return $value;
+    }
+
+    public static function convertToSatoshifromBTC($value){
+        $value =  bcmul($value, 1000000, 8 );
+        return $value;
+    }
+
+
+    public static function formatBTC($value) {
+        $value = sprintf('%.8f', $value);
+        $value = rtrim($value, '0');
+        $value = round($value, 6);
         return $value;
     }
 
     public static function formatNumber($number){
-        $number = rtrim($number,0);
-        //$number = floor($number);
-        $number = doubleval($number);
-        $number = round($number,strlen($number)-1);
+       // $number = self::formatBTC(self::convertToBTCFromSatoshi($number));
         return $number;
     }
     public static function bcdiv_cust( $first, $second, $scale = 0 )

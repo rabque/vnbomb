@@ -30,7 +30,7 @@ class Match extends Model
 
 	public function saveMatch($input, Player $player){
 		$numberOfMine =  $input["num_mines"];
-		$betAmount =(string)$input["bet"];
+		$betAmount = $input["bet"];
 		try{
 			\DB::beginTransaction();
 			// create user if not exist
@@ -55,6 +55,8 @@ class Match extends Model
 					$match->secret = UuidWeb::generate(5,encrypt(Uuid::uuid()),UuidWeb::NS_DNS);
 					$match->next = Utility::calcNextPoint($betAmount,$points["point"][1]);
 					$match->stake = $betAmount;
+					$match->default_stake = $betAmount;
+
 					$match->num_mines = $numberOfMine;
 					$match->save();
 					$match = $this->getMatchbyHash($match->game_hash);
@@ -70,13 +72,14 @@ class Match extends Model
 	}
 
 	public function getMatchbyHash($hash = "",$unsetMine = true){
-		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status','playerID')->where("game_hash",$hash)->get()->first();
+		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status','playerID','default_stake')->where("game_hash",$hash)->get()->first();
 
 		if(!empty($data)){
-			$data->next = Utility::formatNumber($data->next) ;
-			$data->bet = Utility::formatNumber($data->next) ;
-			$data->stake = Utility::formatNumber($data->stake) ;
-			$data->betNumber = Utility::formatNumber($data->betNumber) ;
+			$data->next = Utility::formatBTC($data->next) ;
+			$data->bet = Utility::formatBTC($data->bet) ;
+
+			$data->stake = Utility::formatBTC($data->stake) ;
+			$data->betNumber = Utility::formatBTC($data->betNumber) ;
 			if($unsetMine == true){
 				unset($data->minePositions);
 			}

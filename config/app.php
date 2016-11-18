@@ -78,7 +78,8 @@ return [
     */
 
     'locale' => 'en',
-
+    'locales' => ['en' => 'English', 'vi' => 'Việt Nam'],
+    'skip_locales' => ['admbackend','auth','api'],
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale

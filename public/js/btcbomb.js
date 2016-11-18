@@ -259,7 +259,7 @@ var busy = !1,
     $game_html = $('<div class="game"><div class="game_left"><ul class="board"><li data-tile="1" class="tile"></li><li data-tile="2" class="tile"></li><li data-tile="3" class="tile"></li><li data-tile="4" class="tile"></li><li data-tile="5" class="tile"></li><li data-tile="6" class="tile"></li><li data-tile="7" class="tile"></li><li data-tile="8" class="tile"></li><li data-tile="9" class="tile"></li><li data-tile="10" class="tile"></li><li data-tile="11" class="tile"></li><li data-tile="12" class="tile"></li><li data-tile="13" class="tile"></li><li data-tile="14" class="tile"></li><li data-tile="15" class="tile"></li><li data-tile="16" class="tile"></li><li data-tile="17" class="tile"></li><li data-tile="18" class="tile"></li><li data-tile="19" class="tile"></li><li data-tile="20" class="tile"></li><li data-tile="21" class="tile"></li><li data-tile="22" class="tile"></li><li data-tile="23" class="tile"></li><li data-tile="24" class="tile"></li><li data-tile="25" class="tile"></li></ul></div><div class="game_right"><div class="control standings"><div class="col-left"><p class="standing_label">Next:</p><p class="stand_next"><span class="next"></span></p></div><div class="col-right"><button class="cashout">Cashout</button><p class="standing_label">Stake:</p><p class="stand_stake"><span class="stake"></span></p></div></div><div class="messages"></div></div></div>'),
     sound_enabled = !0,
     sound = new Howl({
-        urls: [BASE_URL + "/sound/btcbomb.mp3", BASE_URL + "/sound/satoshimines.ogg", BASE_URL + "/sound/satoshimines.wav"],
+        urls: [BASE_URL + "/sound/btcbomb.mp3", BASE_URL + "/sound/btcbomb.ogg", BASE_URL + "/sound/btcbomb.wav"],
         sprite: {
             small: [0, 700],
             medium: [790, 700],
@@ -314,7 +314,7 @@ Game.prototype.message = function(e, t) {
     }).done(function(n) {
         if (busy = !1, e.spin(!1), e.removeClass("active_tile"), t.betNumber++, "success" == n.status) {
             if (t.guesses++, "real" == t.gametype, "bitcoins" == n.outcome && (t.change_stake(1e6 * n.stake), animate_val(t.jqel.find(".next"), 1e6 * n.next.toFixed(6)), sound_enabled && sound.play("win"), t.message(n.message, "find"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed").html('<span class="tile_val">+' + abbrNum(1e6 * n.change) + "</span>")), "bomb" == n.outcome) {
-                t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="glyphicon glyphicon-certificate"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="https://satoshimines.com/s/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
+                t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="glyphicon glyphicon-certificate"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="' + BASE_URL + '/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
                 var o = n.bombs.split("-");
                 for (i = 0; i < o.length; i++) t.jqel.find('li[data-tile="' + o[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>');
                 sound_enabled && sound.play("lose")

@@ -132,4 +132,17 @@ class ApiController extends AppController
         return response()->json($response);
     }
 
+    public function getaddr(Request $request){
+
+        $input = $request->only(['secret']);
+
+        if(empty($input["secret"])){
+            throw new \Exception("Invalid data",500);
+        }
+
+        $response["status"] =  "success";
+        $response["address"] =  "19VcUAEk6tW6UFqK9PHxPEeLPFmFdJ4Mit";
+
+        return response()->json($response);
+    }
 }

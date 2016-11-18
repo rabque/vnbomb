@@ -15,6 +15,7 @@
 @endsection
 
 @section("content")
+    <div class="shadow"></div>
     <script src="{{ asset('/js/libraries.js?v='.time()) }}" type="text/javascript"></script>
     <script src="{{ asset('/js/btcbomb.js?v='.time()) }}" type="text/javascript"></script>
     <section class="pad-large while-alt-bg">
@@ -96,6 +97,41 @@
                 <p class="player_info">@lang("website.text_player_info2")</p>
             </div>
         </div>
-
+        <div class="modal">
+            <div class="io_menu">
+                <ul>
+                    <li class="selected" id="io_in">Deposit</li>
+                    <li id="io_out">Withdraw</li>
+                </ul>
+            </div>
+            <div class="io_in io">
+                <p class="deposit_to">Deposit bitcoins to:</p>
+                <p class="btcaddr"></p>
+                <div class="addr_details">
+                </div>
+                <button class="line_btn line_btn_red close_all">Cancel</button>
+                <button class="line_btn line_btn_green refresh_bal">I deposited</button>
+            </div>
+            <div class="io_out io">
+                <p>You have <strong class="out_bits">0</strong> bits. That's exactly <strong>Ƀ<span class="out_bitcoins">0.</span></strong></p>
+                <form class="withdraw_form" action="/action/full_cashout.php" method="POST">
+                    <label>
+                        <span>Amount: </span>
+                        <input type="text" value="0" size="12" class="amount">
+                    </label>
+                    <label>
+                        <span>To: </span>
+                        <input type="text" value="" class="payto_address" placeholder="Bitcoin Address" size="35">
+                    </label>
+                </form>
+                <button class="line_btn line_btn_red close_all" style="margin-top:0em;">Cancel</button>
+                <button class="line_btn line_btn_green withdraw" style="margin-top:0em;">Withdraw</button>
+                <div class="withdraw_messages"></div>
+            </div>
+            <div class="modal_load">
+                <div class="icon"></div>
+                <div class="content"></div>
+            </div>
+        </div>
 
 @endsection

@@ -1184,3 +1184,208 @@ p.error {
 p.find span {
 	color: #488f2f;
 }
+
+
+#deposit_withdraw {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: #333 none repeat scroll 0 0;
+	border-color: #555 #3d3d3d -moz-use-text-color;
+	border-image: none;
+	border-style: solid solid none;
+	border-width: 1px 1px 0;
+	box-shadow: 0 2px 0 #222;
+	color: #ddd;
+	line-height: 1em;
+	padding: 0.4em;
+}
+#deposit_withdraw:active {
+	border-top-color: #111;
+	bottom: -2px;
+	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.4) inset, 0 -1px 0 #000;
+	position: relative;
+}
+.shadow {
+	background: rgba(22, 22, 22, 0.8) none repeat scroll 0 0;
+	bottom: 0;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 900;
+}
+.modal, .pw_modal {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: #222 none repeat scroll 0 0;
+	border-color: #666 #333 #222;
+	border-image: none;
+	border-style: solid;
+	border-width: 1px;
+	box-shadow: 0 0.2em 0.3em rgba(0, 0, 0, 0.5);
+	box-sizing: border-box;
+	left: 50%;
+	margin-left: -15em;
+	min-height: 26em;
+	padding: 1em;
+	position: fixed;
+	top: 5em;
+	width: 30em;
+	z-index: 950;
+	height: 450px;
+}
+.modal, .pw_modal, .shadow {
+	display: none;
+}
+.modal img {
+	background: #fff none repeat scroll 0 0;
+	display: block;
+	margin: 0 auto;
+}
+.modal_load {
+	background: rgba(0, 0, 0, 0.9) none repeat scroll 0 0;
+	bottom: 0;
+	display: none;
+	left: 0;
+	padding: 5em;
+	position: absolute;
+	right: 0;
+	top: 0;
+	color: #ffffff;
+}
+#start_playing, button.cashout {
+	float: right;
+	position: relative;
+	top: -2px;
+}
+.pw_modal .modal_load {
+	padding: 3em;
+}
+.modal_load .icon {
+	display: block;
+	font-size: 4em;
+	height: 1em;
+	margin: 0 auto 0.5em;
+}
+.modal_load .icon i::before {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.line_btn {
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+	border: 1px solid #fff;
+	border-radius: 0.33em;
+	font-size: 1.1em;
+	margin: 1em 0.5em;
+	padding: 0.6em 1.2em;
+}
+.line_btn_red:hover {
+	background: #a00 none repeat scroll 0 0;
+	border-color: #a00;
+}
+.line_btn_green:hover {
+	background: #491 none repeat scroll 0 0;
+	border-color: #491;
+}
+.num_icon {
+	color: #fc0;
+	font-weight: 800;
+	letter-spacing: -0.05em;
+}
+.io_menu {
+	background: #111 none repeat scroll 0 0;
+	margin: -1em -1em 1em;
+}
+.io_menu ul {
+	margin: 0;
+	padding: 0;
+}
+.io_menu li {
+	box-sizing: border-box;
+	color: #aaa;
+	cursor: pointer;
+	display: block;
+	float: left;
+	padding: 1em;
+	text-align: center;
+	width: 50%;
+}
+.bank, .payto input {
+	box-sizing: border-box;
+}
+.io_menu li:hover, ul.addr_links li a:hover {
+	color: #fff;
+}
+.io_menu li.selected {
+	background: #222 none repeat scroll 0 0;
+	color: #fff;
+	cursor: default;
+}
+.io_out {
+	display: none;
+}
+.io {
+	padding: 1em 0 0;
+}
+.withdraw_form {
+	margin: 1em 0;
+}
+.io label {
+	display: block;
+	margin: 0.5em 0;
+}
+.io p {
+	margin: 0;
+	color: #fff;
+}
+.io p.deposit_to {
+	margin: 0 0 0.5em;
+}
+.io p.btcaddr {
+	display: block;
+	font-size: 1.25em;
+	font-weight: 600;
+	margin: 0.3em 0;
+	min-height: 1em;
+	text-align: center;
+}
+.withdraw_form input {
+	max-width: 80%;
+}
+.withdraw_messages p {
+	margin: 0 2em 1em;
+}
+.txid {
+	display: block;
+	margin: 0.5em auto 0;
+	max-width: 24em;
+	word-break: break-all;
+}
+ul.addr_links {
+	margin: 0;
+	padding: 0;
+}
+ul.addr_links li {
+	display: inline;
+	margin: 0 0.25em;
+}
+.addr_details > a {
+	display: inline-block;
+	margin: 1.5em auto 0.5em;
+}
+.pw_modal {
+	min-height: 0;
+}
+.pw_modal input[type="password"] {
+	display: block;
+	margin: 0.5em auto;
+}
+.pw_modal button.primary_btn {
+	float: none;
+	margin: 1em auto;
+}

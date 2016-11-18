@@ -407,7 +407,7 @@ $(document).ready(function() {
 }), $(document).on("click", "#deposit_withdraw", function(e) {
     e.preventDefault(), $(".withdraw_form .amount").val(read_balance()), $(".out_bits").text(read_balance().toLocaleString("en-US")), $(".out_bitcoins").text(read_balance(!0)), $(".modal .io").hide(), show_io("in"), setTimeout(function() {
         $(".modal").fadeIn(250), "" == $(".btcaddr").text() && ($("p.btcaddr").spin(), $.ajax({
-            url: BASE_URL + "/game/getaddr.php",
+            url: BASE_URL + "/api/game/getaddr",
             data: "secret=" + playerhash,
             type: "POST",
             dataType: "json"

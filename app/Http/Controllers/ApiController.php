@@ -75,10 +75,15 @@ class ApiController extends AppController
                 $player = (new Player())->getPlayer($match["playerID"]);
                 $matchClick = new MatchClick();
                 $clickdata = $matchClick->saveClick($input,$match);
+                $bit = Utility::bcdiv_cust(Utility::formatNumber($clickdata["next"]) * config("constants.POINT_BIT_VIEW"),1);
                 if(!empty($clickdata)){
                     $clickdata["status"] = "success";
-                    $bit = Utility::bcdiv_cust(Utility::formatNumber($clickdata["next"]) * config("constants.POINT_BIT_VIEW"),1);
-                    $clickdata["message"] = "You found <span>$bit bits</span> in tile {$input['guess']}";
+                    if($clickdata["outcome"] == "bomb"){
+                        $clickdata["message"] = "Game over! You hit a mine on tile <span>{$input['guess']}</span> and lost <span>$bit bits</span> ";
+                    }else{
+
+                        $clickdata["message"] = "You found <span>$bit bits</span> in tile {$input['guess']}";
+                    }
                 }
             }else{
                 $clickdata["status"] = "error";

@@ -9,11 +9,18 @@
 namespace app\Http\Controllers\LA;
 
 use App\Http\Controllers\Controller;
+use App\Language;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
-
+    public function __construct() {
+        $lang = Language::get();
+        $lang = array_column($lang->toArray(),"name","id");
+        $lang[0] = "Language";
+        ksort($lang);
+        \View::share("languages", $lang);
+    }
     public function sort(Request $request){
         if($request->isMethod("POST")){
             $id = $request->input("id");

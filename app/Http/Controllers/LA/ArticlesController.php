@@ -28,13 +28,14 @@ use App\Models\Article;
 
  */
 
-class ArticlesController extends Controller
+class ArticlesController extends AppController
 {
 	public $show_action = true;
 	public $view_col = 'name';
-	public $listing_cols = ['id', 'name','image',  'slug', 'cate_id','sort', 'status'];
+	public $listing_cols = ['id', 'name','image',  'slug', 'cate_id','lang','sort', 'status'];
 	
 	public function __construct() {
+		parent::__construct();
 		// Field Access of Listing Columns
 		if(\Dwij\Laraadmin\Helpers\LAHelper::laravel_ver() == 5.3) {
 			$this->middleware(function ($request, $next) {
@@ -265,6 +266,13 @@ class ArticlesController extends Controller
 			$keyword = Utility::removeScripts($keyword);
 			$out->where('articles.name', 'like', "$keyword%");
 		}
+
+		if ($lang = $request->get('lang')) {
+			$lang = Utility::getInt($lang);
+			$out->where('articles.lang',  $lang);
+		}
+
+
 		$out = 	$out->make();
 		$data = $out->getData();
 
@@ -290,6 +298,10 @@ class ArticlesController extends Controller
 					}else{
 						$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
 					}
+				}
+
+				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@") && $col == "lang") {
+					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
 				}
 
 				if($col == $this->view_col) {

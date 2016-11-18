@@ -20,13 +20,14 @@ use Dwij\Laraadmin\Models\ModuleFields;
 
 use App\Models\Category;
 
-class CategoriesController extends Controller
+class CategoriesController extends AppController
 {
 	public $show_action = true;
 	public $view_col = 'name';
-	public $listing_cols = ['id', 'status', 'name', 'slug', 'parent_id', 'module_id', 'sort'];
+	public $listing_cols = ['id',  'name', 'slug', 'parent_id', 'module_id','lang', 'sort','status'];
 	
 	public function __construct() {
+		parent::__construct();
 		// Field Access of Listing Columns
 		if(\Dwij\Laraadmin\Helpers\LAHelper::laravel_ver() == 5.3) {
 			$this->middleware(function ($request, $next) {
@@ -238,6 +239,14 @@ class CategoriesController extends Controller
 			$keyword = Utility::removeScripts($keyword);
 			$out->where('categories.name', 'like', "$keyword%");
 		}
+
+		if ($lang = $request->get('lang')) {
+			$lang = Utility::getInt($lang);
+			$out->where('categories.lang',  $lang);
+		}
+
+
+
 		$out = $out->make();
 
 
@@ -247,7 +256,11 @@ class CategoriesController extends Controller
 		$fields_popup = ModuleFields::getModuleFields('Categories');
 		
 		for($i=0; $i < count($data->data); $i++) {
-			for ($j=0; $j < count($this->listing_cols); $j++) { 
+			$id=0;
+			for ($j=0; $j < count($this->listing_cols); $j++) {
+				if($j==0){
+					$id=$data->data[$i][$j];
+				}
 				$col = $this->listing_cols[$j];
 				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@")) {
 					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
@@ -255,9 +268,25 @@ class CategoriesController extends Controller
 				if($col == $this->view_col) {
 					$data->data[$i][$j] = '<a href="'.url(config('laraadmin.adminRoute') . '/categories/'.$data->data[$i][0]).'">'.$data->data[$i][$j].'</a>';
 				}
+				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@") && $col == "lang") {
+					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
+				}
 				// else if($col == "author") {
 				//    $data->data[$i][$j];
 				// }
+
+				if($col == "sort"){
+					$data->data[$i][$j] = "<input class=\"form-control input-sm\" placeholder=\"sort\" id='sort_numb_{$id}' name=\"sort_numb\" value='{$data->data[$i][$j]}'>
+									<button class=\"btn btn-primary btn-sm \" type=\"button\" onclick=\"sort('{$id}','Article')\">Sort</button>";
+				}
+				if($col == "status"){
+					$status = ($data->data[$i][$j]==1)?2:1;
+					$icons = ($data->data[$i][$j]==1)?'<i class="fa fa-check" aria-hidden="true"></i>':'<i class="fa fa-times" aria-hidden="true"></i>';
+					$class = ($data->data[$i][$j]==1)?"btn-success":"btn-danger";
+
+					$data->data[$i][$j] =  "<a class=\"btn btn-primary btn-sm {$class}\" href=\"javascript:;\" onclick=\"updateFields('{$id}','{$status}','status','Article')\">{$icons}</a>";
+				}
+
 			}
 			
 			if($this->show_action) {

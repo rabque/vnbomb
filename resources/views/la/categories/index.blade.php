@@ -41,6 +41,11 @@
 
 			</div>
 
+			<div class="form-group">
+				<label class="sr-only" for="">Language</label>
+				{!! Form::select('lang', $languages, null, ['class' => 'form-control']) !!}
+
+			</div>
 
 			<button type="submit" class="btn btn-primary">Search</button>
 		</form>
@@ -120,6 +125,7 @@ $(function () {
 			data: function (d) {
 				d.keyword = $('input[name=keyword]').val();
 				d.parent = $('select[name=parent_id]').val();
+				d.lang = $('select[name=lang]').val();
 			}
 		},
 		language: {
@@ -132,10 +138,10 @@ $(function () {
 			var rows = api.rows({page: 'current'}).nodes();
 			var last = null;
 
-			api.column(4, {page: 'current'}).data().each(function (group, i) {
+			api.column(3, {page: 'current'}).data().each(function (group, i) {
 				if (last !== group) {
 					$(rows).eq(i).before(
-							'<tr class="group"><td colspan="8">' + group + '</td></tr>'
+							'<tr class="group"><td colspan="9">' + group + '</td></tr>'
 					);
 
 					last = group;

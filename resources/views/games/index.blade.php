@@ -26,7 +26,7 @@
                         <div class="top_row">
                             <div class="center_block">
                                 <Center>
-                                <span class="headerbalance">Balance</span>
+                                <span class="headerbalance">@lang("website.balance")</span>
                                 <span class="val"><span class="num" title="Ƀ0.000000">0</span></span>
                                 </Center>
                             </div>
@@ -34,7 +34,7 @@
                         <div class="bottom_row">
                             <div class="center_block">
                                 <Center>
-                                <button class="dw" id="deposit_withdraw">Deposit / Withdraw</button>
+                                <button class="dw" id="deposit_withdraw">@lang("website.withdraw")</button>
                                 </Center>
                             </div>
                         </div>
@@ -61,10 +61,10 @@
                     <div class="starter">
                         <div class="top_row">
                             <div class="c60 cell">
-                                <input class="bet" id="bet" type="number" pattern="[0-9]*" pattern="[$" placeholder="Bet" value="">
+                                <input class="bet" id="bet" type="number" pattern="[0-9]*" pattern="[$" placeholder="@lang("website.bet")" value="">
                             </div>
                             <div class="c40 cell">
-                                <button id="start_game" class="btn btn-danger">Play</button>
+                                <button id="start_game" class="btn btn-danger">@lang("website.play")</button>
                             </div>
                         </div>
                         <div class="bottom_row mine_options">
@@ -90,10 +90,10 @@
 
                 </div>
                 <p class="player_info" style="border-color:#280;">
-                    <strong>NEVER</strong>
-                    share your unique player URL with any other person.
+                    @lang("website.text_player_info1")
+
                 </p>
-                <p class="player_info">If you have a balance of 0, you can bet any amount to start a practice game.</p>
+                <p class="player_info">@lang("website.text_player_info2")</p>
             </div>
         </div>
 

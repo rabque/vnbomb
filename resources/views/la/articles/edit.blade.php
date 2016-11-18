@@ -30,6 +30,7 @@
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				{!! Form::model($article, ['route' => [config('laraadmin.adminRoute') . '.articles.update', $article->id ], 'method'=>'PUT', 'id' => 'article-edit-form']) !!}
+				@la_input($module, 'lang')
 					@la_input($module, 'status')
 					@la_input($module, 'name')
 					@la_input($module, 'slug')

@@ -47,6 +47,7 @@
 						<h4>General Info</h4>
 					</div>
 					<div class="panel-body">
+						@la_display($module, 'lang')
 						@la_display($module, 'status')
 						@la_display($module, 'name')
 						@la_display($module, 'slug')

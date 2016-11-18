@@ -29,8 +29,8 @@
 <section class="pad-large while-alt-bg  text-center" id="feature">
     <div class="container">
         <div class="row">
-            <h3 class="light-weight">Feature</h3>
-            <p class="pad-sides-15 grey-med margin-bottom-large">Far beyond your typical auth solution.</p>
+            <h3 class="light-weight">@lang("website.feature")</h3>
+            <p class="pad-sides-15 grey-med margin-bottom-large">@lang("website.text_feature")</p>
         </div>
         <div class="row text-center">
             @if(!empty($notes))
@@ -54,17 +54,17 @@
 <section class="pad-large  grey-dark-alt-bg text-center" id="feature">
     <div class="container">
         <div class="row">
-            <h3 class="light-weight">Today's Top 5 Players</h3>
+            <h3 class="light-weight">@lang("website.top_player")</h3>
         </div>
         <div class="row">
             <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-lg-offset-2 col-md-offset-2">
                 <table class="player_scores table table-hover">
                     <thead>
                     <tr>
-                        <th><span class="wl">Player </span>Name</th>
-                        <th><span class="wl">Amount </span>Bet</th>
-                        <th><span class="wl">Amount </span>Won</th>
-                        <th>Total<span class="wl"> Winnings</span></th>
+                        <th>@lang("website.h_player_list")</th>
+                        <th>@lang("website.h_amount_bet")</th>
+                        <th>@lang("website.h_amount_won")</th>
+                        <th>@lang("website.h_total_win")</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -111,19 +111,19 @@
 <section class="pad-large  while-alt-bg text-center" id="feature">
     <div class="container">
         <div class="row">
-            <h3 class="light-weight">This Past Week's Top 10 Winning Rounds</h3>
+            <h3 class="light-weight">@lang("website.top_player_week")</h3>
         </div>
         <div class="row">
             <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-lg-offset-2 col-md-offset-2">
                 <table class="game_scores  table table-hover">
                     <thead>
                     <tr>
-                        <th>Board</th>
-                        <th>Player</th>
-                        <th>Bet</th>
-                        <th>Cash Out</th>
-                        <th>Win X</th>
-                        <th>Next Tile</th>
+                        <th>@lang("website.top_week_board")</th>
+                        <th>@lang("website.top_week_player")</th>
+                        <th>@lang("website.top_week_bet")</th>
+                        <th>@lang("website.top_week_cashout")</th>
+                        <th>@lang("website.top_week_winx")</th>
+                        <th>@lang("website.top_week_next_title")</th>
                     </tr>
                     </thead>
                     <tbody>

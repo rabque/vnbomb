@@ -40,7 +40,11 @@
 				{!! Form::select('cate_id', $categories, null, ['class' => 'form-control']) !!}
 
 			</div>
+			<div class="form-group">
+				<label class="sr-only" for="">Language</label>
+				{!! Form::select('lang', $languages, null, ['class' => 'form-control']) !!}
 
+			</div>
 
 			<button type="submit" class="btn btn-primary">Search</button>
 		</form>
@@ -75,7 +79,7 @@
 			{!! Form::open(['action' => 'LA\ArticlesController@store', 'id' => 'article-add-form']) !!}
 			<div class="modal-body">
 				<div class="box-body">
-
+					@la_input($module, 'lang')
 					@la_input($module, 'status')
 					@la_input($module, 'name')
 					@la_input($module, 'slug')
@@ -118,6 +122,7 @@ $(function () {
 			data: function (d) {
 				d.keyword = $('input[name=keyword]').val();
 				d.category = $('select[name=cate_id]').val();
+				d.lang = $('select[name=lang]').val();
 			}
 		},
 		language: {

@@ -11,7 +11,7 @@
                 <nav class="navigation nav navbar bootsnav">
                     <ul class="anchor-nav black-dark-bg" data-in="fadeInDown" data-out="fadeOutUp">
                         <li>
-                            <a href="{{ url("/games?uuid=".$uuid)  }}">Start game</a>
+                            <a href="{{ url("/games?uuid=".$uuid)  }}">@lang("website.start_game")</a>
                         </li>
                         @if(!empty($menuTop))
                             @foreach($menuTop as $menu)

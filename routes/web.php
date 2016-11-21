@@ -67,22 +67,23 @@ Route::group(array('before' => 'auth'), function () {
 
 });
 
-Route::get('showImage/{w}/{h}/{src}', function ($w , $h , $src)
+Route::get('showImage/{w}/{h}/{src}', function ($w , $h = 0 , $src)
 {
     $img_path = public_path().'/'.$src;
     if(empty($src) || !is_file($img_path)){
         $img_path = public_path().'/img/no-image.png';
     }
     $with = \Config::get("constants.IMG_WITH");
-    $height = \Config::get("constants.IMG_HEIGHT");
+   // $height = \Config::get("constants.IMG_HEIGHT");
     if(empty($w)){
         $w = $with;
     }
-    if(empty($h)){
-        $h = $height;
+    if(!empty($h)){
+        $img = Image::make($img_path)->resize($w,$h);
+    }else{
+        $img = Image::make($img_path)->resize($w);
     }
 
-    $img = Image::make($img_path)->resize($w, $h);
     return $img->response('jpg');
 })->where('src', '[A-Za-z0-9\/\.\-\_]+');
 

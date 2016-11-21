@@ -69,9 +69,13 @@ $position = \Config::get("constants.POSITION_MENU");
 									<label for="name" style="font-weight:normal;float: left;">Position</label>
 									{{ Form::select("position",$position,null,array("class"=>"form-control","style"=>"width:70%"))  }}
 								</div>
-
+								<div class="form-group">
+									<label for="name" style="font-weight:normal;float: left;">Language</label>
+									{{ Form::select("language",$language,null,array("class"=>"form-control","style"=>"width:70%"))  }}
+								</div>
 
 								<input type="submit" class="btn btn-primary pull-right mr10" value="Add to menu">
+								<div class="clearfix"></div>
 								{!! Form::close() !!}
 							</div>
 						</div><!-- /.tab-content -->
@@ -79,8 +83,25 @@ $position = \Config::get("constants.POSITION_MENU");
 				</div>
 				<div class="col-md-8 col-lg-8">
 					<div class="form-group">
-						<label for="name" style="font-weight:normal;">Position</label>
-						{{ Form::select("position",$position,$position_value,array("class"=>"form-control","id"=>"position_value"))  }}
+						<div class="row">
+							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+								<label for="name" style="font-weight:normal;">Language</label>
+								{{ Form::select("language",$language,$language_value,array("class"=>"form-control","id"=>"language_value"))  }}
+							</div>
+							<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+								<label for="name" style="font-weight:normal;">Position</label>
+								{{ Form::select("position",$position,$position_value,array("class"=>"form-control","id"=>"position_value"))  }}
+							</div>
+							<div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
+								<br>
+								<button type="button" onclick="loadMenu()" class="btn btn-primary">Lọc</button>
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+					</div>
+					<div class="form-group">
+
 					</div>
 					<div class="dd" id="menu-nestable">
 						<ol class="dd-list">
@@ -118,6 +139,10 @@ $position = \Config::get("constants.POSITION_MENU");
 							<label for="name" style="font-weight:normal;">Position</label>
 							{{ Form::select("position",$position,null,array("class"=>"form-control"))  }}
 						</div>
+						<div class="form-group">
+						<label for="name" style="font-weight:normal;float: left;">Language</label>
+						{{ Form::select("language",$language,null,array("class"=>"form-control"))  }}
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -135,13 +160,24 @@ $position = \Config::get("constants.POSITION_MENU");
 <script src="{{ asset('la-assets/plugins/nestable/jquery.nestable.js') }}"></script>
 <script src="{{ asset('la-assets/plugins/iconpicker/fontawesome-iconpicker.js') }}"></script>
 <script>
+
+	function loadMenu(){
+		var position_value = $("#position_value").val();
+
+		var language_value = $("#language_value").val();
+		$("#position_custom").val(position_value);
+		window.location.href = '<?php echo url(config('laraadmin.adminRoute') . '/famenus?position=') ?>' + position_value + '&language=' + language_value;
+	}
+
 	$(function () {
 
-		$("#position_value").on("change",function(){
+		/*$("#position_value").on("change",function(){
 			$("#position_custom").val(this.value);
 			window.location.href = '<?php echo url(config('laraadmin.adminRoute') . '/famenus?position=') ?>' + this.value;
 
-		});
+		});*/
+
+
 
 		$('input[name=icon]').iconpicker();
 
@@ -177,6 +213,7 @@ $position = \Config::get("constants.POSITION_MENU");
 			$("#EditModal input[name=url]").val(info.url);
 			$("#EditModal input[name=name]").val(info.name);
 			$("#EditModal select[name=position]").val(info.position);
+			$("#EditModal select[name=language]").val(info.lang);
 			$("#EditModal").modal("show");
 		});
 
@@ -193,6 +230,8 @@ $position = \Config::get("constants.POSITION_MENU");
 					type: 'custom',
 					table: "module",
 					module_id: module_id,
+					position: $("#position_value").val(),
+					language: $("#language_value").val(),
 					"_token": '{{ csrf_token() }}'
 				},
 				success: function( data ) {
@@ -211,6 +250,8 @@ $position = \Config::get("constants.POSITION_MENU");
 					type: 'custom',
 					table: 'categories',
 					module_id: module_id,
+					position: $("#position_value").val(),
+					language: $("#language_value").val(),
 					"_token": '{{ csrf_token() }}'
 				},
 				success: function( data ) {

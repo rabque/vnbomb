@@ -30,7 +30,7 @@
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				{!! Form::model($slider, ['route' => [config('laraadmin.adminRoute') . '.sliders.update', $slider->id ], 'method'=>'PUT', 'id' => 'slider-edit-form']) !!}
-
+				@la_input($module, 'lang')
 					@la_input($module, 'status')
 					@la_input($module, 'name')
 					@la_input($module, 'url')

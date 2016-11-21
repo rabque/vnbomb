@@ -30,7 +30,7 @@
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				{!! Form::model($setting, ['route' => [config('laraadmin.adminRoute') . '.settings.update', $setting->id ], 'method'=>'PUT', 'id' => 'setting-edit-form']) !!}
-
+				@la_input($module, 'lang')
 				@la_input($module, 'name')
 				@la_input($module, 'phone')
 				@la_input($module, 'email')

@@ -57,7 +57,7 @@
 			<div class="modal-body">
 				<div class="box-body">
 
-
+					@la_input($module, 'lang')
 					@la_input($module, 'name')
 					@la_input($module, 'phone')
 					@la_input($module, 'email')

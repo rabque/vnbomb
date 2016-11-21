@@ -30,6 +30,7 @@
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				{!! Form::model($note, ['route' => [config('laraadmin.adminRoute') . '.notes.update', $note->id ], 'method'=>'PUT', 'id' => 'note-edit-form']) !!}
+				@la_input($module, 'lang')
 					@la_input($module, 'name')
 				<?php echo \App\Common\FormMaker::input($module,"image") ?>
 					@la_input($module, 'content')

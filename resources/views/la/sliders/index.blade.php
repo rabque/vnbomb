@@ -25,6 +25,23 @@
 @endif
 
 <div class="box box-success">
+	<div class="box-body">
+		<form id="search-form" action="" method="post" class="form-inline" role="form">
+
+			<div class="form-group">
+				<label class="sr-only" for="">Keyword</label>
+				{!! Form::input('text', "keyword", null, ['class' => 'form-control']) !!}
+			</div>
+
+			<div class="form-group">
+				<label class="sr-only" for="">Language</label>
+				{!! Form::select('lang', $languages, null, ['class' => 'form-control']) !!}
+
+			</div>
+
+			<button type="submit" class="btn btn-primary">Search</button>
+		</form>
+	</div>
 	<!--<div class="box-header"></div>-->
 	<div class="box-body">
 		<table id="example1" class="table table-bordered">
@@ -56,7 +73,7 @@
 			{!! Form::open(['action' => 'LA\SlidersController@store', 'id' => 'slider-add-form']) !!}
 			<div class="modal-body">
 				<div class="box-body">
-
+					@la_input($module, 'lang')
 					@la_input($module, 'status')
 					@la_input($module, 'name')
 					@la_input($module, 'url')
@@ -85,10 +102,18 @@
 <script src="{{ asset('la-assets/plugins/datatables/datatables.min.js') }}"></script>
 <script>
 $(function () {
-	var table = $("#example1").DataTable({
+
+
+	table = $("#example1").DataTable({
 		processing: true,
-        serverSide: true,
-        ajax: "{{ url(config('laraadmin.adminRoute') . '/slider_dt_ajax') }}",
+		serverSide: true,
+		ajax: {
+			url: "{{ url(config('laraadmin.adminRoute') . '/slider_dt_ajax') }}",
+			data: function (d) {
+				d.keyword = $('input[name=keyword]').val();
+				d.lang = $('select[name=lang]').val();
+			}
+		},
 		language: {
 			lengthMenu: "_MENU_",
 			search: "_INPUT_",
@@ -98,8 +123,12 @@ $(function () {
 		columnDefs: [ { orderable: false, targets: [-1] }],
 		@endif
 	});
-	$("#slider-add-form").validate({
-		
+	$("#article-add-form").validate({
+
+	});
+	$('#search-form').on('submit', function(e) {
+		table.draw();
+		e.preventDefault();
 	});
 });
 </script>

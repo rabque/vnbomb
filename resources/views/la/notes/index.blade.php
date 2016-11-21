@@ -56,6 +56,7 @@
 			{!! Form::open(['action' => 'LA\NotesController@store', 'id' => 'note-add-form']) !!}
 			<div class="modal-body">
 				<div class="box-body">
+					@la_input($module, 'lang')
 					@la_input($module, 'name')
 					<?php echo \App\Common\FormMaker::input($module,"image") ?>
 					@la_input($module, 'content')

@@ -48,6 +48,7 @@
 						<h4>General Info</h4>
 					</div>
 					<div class="panel-body">
+						@la_display($module, 'lang')
 						@la_display($module, 'name')
 						<div class="form-group">
 							<label for="url" class="col-md-2">Image :</label>

@@ -34,5 +34,7 @@ return [
     "balance" => "Balance",
     "withdraw" => "Deposit / Withdraw",
     "text_player_info1" => "<strong>NEVER</strong> share your unique player URL with any other person.",
-    "text_player_info2" => "If you have a balance of 0, you can bet any amount to start a practice game."
+    "text_player_info2" => "If you have a balance of 0, you can bet any amount to start a practice game.",
+    "play" => "Play",
+    "bet" => "Bet"
 ];

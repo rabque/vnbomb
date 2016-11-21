@@ -128,7 +128,6 @@ $(function () {
 		});
 
 	});
-	hidePoint({{ $point->game_type  }})
 	function hidePoint(value){
 		var startHide = 24 - value;
 		$(".point_list ul li").each(function( index ) {

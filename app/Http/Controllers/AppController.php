@@ -29,9 +29,10 @@ class AppController extends Controller
     }
 
     public function getCommon(){
-        $configs = Setting::first();
-        $menuTop = FAMenu::where("position",1)->orderBy("hierarchy","ASC")->get();
-        $menuFooter = FAMenu::where("position",2)->orderBy("hierarchy","ASC")->get();
+
+        $configs = Setting::language()->get()->first();
+        $menuTop = FAMenu::language()->where("position",1)->orderBy("hierarchy","ASC")->get();
+        $menuFooter = FAMenu::language()->where("position",2)->orderBy("hierarchy","ASC")->get();
         $socials = Social::all();
 
         //unique cookie

@@ -9,6 +9,7 @@ namespace App\Http\Controllers\LA;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\FAMenu;
+use App\Models\Language;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -32,16 +33,24 @@ class FAMenusController extends Controller
     public function index(Request $request)
     {
         $position = (!empty($request->get("position")))?$request->get("position"):1;
+        $language_value = (!empty($request->get("language")))?$request->get("language"):1;
         $modules = Module::whereIn("id",array(11,12))->get();
         $categories = Category::getTree();
-        $menuItems = FAMenu::where("parent", 0)->where("position",$position)
+        $menuItems = FAMenu::where("parent", 0)
+                        ->where("position",$position)
+                        ->where("lang",$language_value)
                         ->orderBy('hierarchy', 'asc')->get();
 
+        $language = Language::all()->toArray();
+        $language = (!empty($language))?array_column($language,"name","id"):[];
+        $request->session()->put('lang_menu', $language_value);
         return View('la.famenus.index', [
             'menus' => $menuItems,
             'categories' => $categories,
             'modules'   => $modules,
-            'position_value'   => $position
+            'position_value'   => $position,
+            'language_value'   => $language_value,
+            'language'  => $language
         ]);
     }
 
@@ -68,7 +77,7 @@ class FAMenusController extends Controller
         $type = Input::get('type');
         $position = Input::get('position');
         $table = Input::get('table');
-
+        $langmenu = $request->session()->get('lang_menu', 1);
 
         if($table == "module") {
             $module_id = Input::get('module_id');
@@ -107,7 +116,8 @@ class FAMenusController extends Controller
             "url" => $url,
             "type" => $type,
             "position" => $position,
-            "parent" => 0
+            "parent" => 0,
+            "lang"  => $langmenu
         ]);
         if(!empty($menuid) && !empty($subCategory)){
             foreach ($subCategory as $sub){
@@ -116,7 +126,8 @@ class FAMenusController extends Controller
                         "name" => $sub->name,
                         "url" => $sub->slug,
                         "type" => $type,
-                        "parent" => $menuid->id
+                        "parent" => $menuid->id,
+                        "lang"  => $langmenu
                     ]);
                 }
 
@@ -127,7 +138,7 @@ class FAMenusController extends Controller
                 "status" => "success"
             ], 200);
         } else {
-            return redirect(config('laraadmin.adminRoute').'/famenus?position='.$position);
+            return redirect(config('laraadmin.adminRoute').'/famenus?position='.$position.'&language='.$langmenu);
         }
     }
 
@@ -161,10 +172,12 @@ class FAMenusController extends Controller
         $name = Input::get('name');
         $url = Input::get('url');
         $type = Input::get('type');
+        $langmenu = $request->session()->get('lang_menu', 1);
 
         $menu = FAMenu::find($id);
         $menu->name = $name;
         $menu->url = $url;
+        $menu->lang = $langmenu;
         $menu->save();
 
         return redirect(config('laraadmin.adminRoute').'/famenus');
@@ -183,14 +196,14 @@ class FAMenusController extends Controller
         $position = $menu->position;
         $menu->delete();
         $child = FAMenu::where(array("parent"=>$id))->get();
-
+        $langmenu = \Session::get('lang_menu', 1);
         foreach ($child as $value){
             if(!empty($value->id)){
                 FAMenu::find($value->id)->delete();
             }
         }
         // Redirecting to index() method for Listing
-        return  redirect(config('laraadmin.adminRoute').'/famenus?position='.$position);
+        return  redirect(config('laraadmin.adminRoute').'/famenus?position='.$position.'&language='.$langmenu);
     }
 
     /**

@@ -8,6 +8,7 @@ namespace App\Http\Controllers\LA;
 
 use App\Common\Utility;
 use App\Http\Controllers\Controller;
+use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Auth;
@@ -263,13 +264,18 @@ class CategoriesController extends AppController
 				}
 				$col = $this->listing_cols[$j];
 				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@")) {
+
 					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
 				}
 				if($col == $this->view_col) {
 					$data->data[$i][$j] = '<a href="'.url(config('laraadmin.adminRoute') . '/categories/'.$data->data[$i][0]).'">'.$data->data[$i][$j].'</a>';
 				}
+
 				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@") && $col == "lang") {
-					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
+					$lang = Language::getLangById($data->data[$i][$j]);
+					if(!empty($lang)){
+						$data->data[$i][$j] = $lang->name;
+					}
 				}
 				// else if($col == "author") {
 				//    $data->data[$i][$j];

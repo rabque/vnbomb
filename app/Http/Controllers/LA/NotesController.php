@@ -24,7 +24,7 @@ class NotesController extends Controller
 {
 	public $show_action = true;
 	public $view_col = 'name';
-	public $listing_cols = ['id', 'name', 'image', 'content', 'status', 'sort'];
+	public $listing_cols = ['id', 'name', 'image', 'content','lang', 'status', 'sort'];
 	
 	public function __construct() {
 		// Field Access of Listing Columns

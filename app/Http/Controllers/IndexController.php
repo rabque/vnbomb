@@ -30,8 +30,8 @@ class IndexController extends AppController
      */
     public function index()
     {
-        $sliders = Slider::all();
-        $notes = Note::all();
+        $sliders = Slider::language()->get();
+        $notes = Note::language()->get();
 		return view('index.index',[
             'sliders' => $sliders,
             'notes' => $notes,

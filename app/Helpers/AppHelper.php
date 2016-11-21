@@ -64,6 +64,7 @@ class AppHelper extends LAHelper
             $info->url = $menu->url;
             $info->type = $menu->type;
             $info->position = $menu->position;
+            $info->lang = $menu->lang;
 
             $editing .= '<a class="editMenuBtn btn btn-xs btn-success pull-right" info=\''.json_encode($info).'\'><i class="fa fa-edit"></i></a>';
         }
@@ -125,7 +126,8 @@ class AppHelper extends LAHelper
     public static function thumbimg($src, $options = array(),$attributes = array()){
         if(empty($src)) return "";
         $options["w"] = \Config::get("constants.IMG_WITH");
-        $options["h"] = \Config::get("constants.IMG_HEIGHT");
+        //$options["h"] = \Config::get("constants.IMG_HEIGHT");
+        $h = 0;
         if(!empty($options["w"])){
             $w = $options["w"];
         }

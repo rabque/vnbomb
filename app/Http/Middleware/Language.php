@@ -41,9 +41,11 @@ class Language
                     return $this->redirector->to(implode('/', $segments));
                 }
             }
+
+            $lang = $this->getLang($locale);
             $this->app->setLocale($locale);
             Session::put("locate",$locale);
-           // \Session::put("locate",$locale);
+            Session::put("locate_value",$lang->id);
         }else{
             if(Session::has("locate")){
                 $locale = Session::get("locate");
@@ -54,6 +56,14 @@ class Language
             }
         }
         return $next($request);
+    }
+
+    public function getLang($locate){
+        $lang = \App\Models\Language::where("name",$locate)->get()->first();
+        if(empty($lang)){
+            throw new \Exception("Invalid locate",500);
+        }
+        return $lang;
     }
 
 }

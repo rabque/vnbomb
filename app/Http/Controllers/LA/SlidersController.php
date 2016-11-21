@@ -6,6 +6,7 @@
 
 namespace App\Http\Controllers\LA;
 
+use App\Common\Utility;
 use App\Helpers\AppHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -20,13 +21,14 @@ use Dwij\Laraadmin\Models\ModuleFields;
 
 use App\Models\Slider;
 
-class SlidersController extends Controller
+class SlidersController extends AppController
 {
 	public $show_action = true;
 	public $view_col = 'name';
-	public $listing_cols = ['id',  'name', 'url', 'image', 'sort','status'];
+	public $listing_cols = ['id',  'name', 'url', 'image','lang', 'sort','status'];
 	
 	public function __construct() {
+		parent::__construct();
 		// Field Access of Listing Columns
 		if(\Dwij\Laraadmin\Helpers\LAHelper::laravel_ver() == 5.3) {
 			$this->middleware(function ($request, $next) {
@@ -208,12 +210,34 @@ class SlidersController extends Controller
 	 *
 	 * @return
 	 */
-	public function dtajax()
+	public function dtajax(Request $request)
 	{
-		$values = DB::table('sliders')->select($this->listing_cols)->whereNull('deleted_at');
-		$out = Datatables::of($values)->make();
-		$data = $out->getData();
 
+
+		$values = DB::table('sliders')
+			->select($this->listing_cols)
+			->whereNull('deleted_at');
+		$this->listing_cols[0] = "id";
+		$out = Datatables::of($values);
+		if ($keyword = $request->get('search')['value']) {
+			// override users.name global search
+			$keyword = Utility::removeScripts($keyword);
+			$out->filterColumn('sliders.name', 'where', 'like', "$keyword%");
+		}
+
+
+		if ($keyword = $request->get('keyword')) {
+			$keyword = Utility::removeScripts($keyword);
+			$out->where('sliders.name', 'like', "$keyword%");
+		}
+
+		if ($lang = $request->get('lang')) {
+			$lang = Utility::getInt($lang);
+			$out->where('sliders.lang',  $lang);
+		}
+
+		$out = 	$out->make();
+		$data = $out->getData();
 		$fields_popup = ModuleFields::getModuleFields('Sliders');
 		
 		for($i=0; $i < count($data->data); $i++) {
@@ -230,7 +254,7 @@ class SlidersController extends Controller
 				}
 
 				if($col == "image"){
-					$data->data[$i][$j] =  AppHelper::thumbimg($data->data[$i][$j],array("html"=>true),array("link"=>array("class"=>"fancybox")));
+					$data->data[$i][$j] =  AppHelper::thumbimg($data->data[$i][$j],array("html"=>true,"w"=>300,"h"=>100),array("link"=>array("class"=>"fancybox")));
 				}
 				if($col == "sort"){
 					$data->data[$i][$j] = "<input class=\"form-control input-sm\" placeholder=\"sort\" id='sort_numb_{$id}' name=\"sort_numb\" value='{$data->data[$i][$j]}'>

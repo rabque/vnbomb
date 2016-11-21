@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Common\Utility;
 use Illuminate\Database\Eloquent\Model;
 use SEO;
+use Illuminate\Database\Eloquent\Builder;
 class AppModel extends Model
 {
     public static function boot()
@@ -18,6 +19,25 @@ class AppModel extends Model
         static::updating(function($activity) {
            self::processAtributes($activity);
         });
+        /*static::addGlobalScope('lang', function (Builder $builder)  {
+            $language = (\Session::exists("locate"))?\Session::get("locate"):"en";
+            $builder->where('lang', $language);
+        });*/
+
+
+    }
+
+
+    /**
+     * Scope a query to only include language users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLanguage($query)
+    {
+        $language = (\Session::exists("locate_value"))?\Session::get("locate_value"):1;
+        return $query->where('lang', $language);
     }
 
     protected static function processAtributes(&$activity){

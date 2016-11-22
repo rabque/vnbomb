@@ -1389,3 +1389,35 @@ ul.addr_links li {
 	float: none;
 	margin: 1em auto;
 }
+.live_scores th,.player_scores th{
+	text-align: center;
+}
+.live_scores input {
+	background: #ddd none repeat scroll 0 0;
+	border: 1px solid #555;
+	color: #fff;
+	max-width: 5em;
+	padding: 0.2em;
+}
+.match_history{
+	display: table;
+	margin: 0 auto;
+	width: 50px;
+}
+.match_history  LI{
+	float: left;
+	width: 10px;
+	height: 10px;
+	list-style: none;
+	border: 1px solid #dddddd;
+	background: #ffffff;
+}
+.match_history  LI.m_click{
+	background: #0FB097;
+}
+.match_history  LI.m_bomb{
+	background: red;
+}
+.s_profit{
+	color: #3d0;
+}

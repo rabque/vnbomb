@@ -114,7 +114,7 @@
     </div>
 </section>
 @endif
-
+@if(!empty($topWeek))
 <section class="pad-large  while-alt-bg text-center" id="feature">
     <div class="container">
         <div class="row">
@@ -134,106 +134,19 @@
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach($topWeek as $item)
                     <tr>
                         <td>
-                            <div class="minigame"><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="rr"></div><div></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div></div>
+                           <?php echo $item["match_click"] ?>
                         </td>
-                        <td>Ernie</td>
-                        <td title="Ƀ0.002224">2,224</td>
-                        <td title="Ƀ0.424598" class="win">424,598</td>
-                        <td>190.92x</td>
-                        <td title="Ƀ0.305711" class="win_next">+305,711</td>
+                        <td>{{ $item["name"]  }}</td>
+                        <td title="Ƀ0.002224">{{ $item["bet"]  }}</td>
+                        <td title="Ƀ0.424598" class="win">{{ $item["stake"]  }}</td>
+                        <td>{{ $item["winx"]  }}</td>
+                        <td title="Ƀ0.305711" class="win_next">+{{ $item["next"]  }}</td>
                     </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="rr"></div><div class="g"></div><div class="g"></div><div></div><div></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div></div><div class="g"></div><div></div><div class="g"></div><div class="g"></div><div></div><div class="rr"></div><div class="g"></div><div></div><div class="rr"></div><div class="g"></div><div></div><div></div><div class="g"></div></div>
-                        </td>
-                        <td>Dudley</td>
-                        <td title="Ƀ0.033">33,000</td>
-                        <td title="Ƀ1.198733" class="win">1,198,733</td>
-                        <td>36.33x</td>
-                        <td title="Ƀ0.287696" class="win_next">+287,696</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="g"></div><div class="g"></div><div></div><div class="rr"></div><div></div><div></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div></div><div></div><div></div><div class="g"></div><div></div><div class="g"></div><div class="rr"></div></div>
-                        </td>
-                        <td>Dudley</td>
-                        <td title="Ƀ0.025">25,000</td>
-                        <td title="Ƀ0.908113" class="win">908,113</td>
-                        <td>36.32x</td>
-                        <td title="Ƀ0.217947" class="win_next">+217,947</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div></div><div class="g"></div><div class="g"></div><div class="g"></div><div></div><div></div><div></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div></div>
-                        </td>
-                        <td>Ernie</td>
-                        <td title="Ƀ0.002224">2,224</td>
-                        <td title="Ƀ0.125949" class="win">125,949</td>
-                        <td>56.63x</td>
-                        <td title="Ƀ0.060456" class="win_next">+60,456</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="g"></div><div class="g"></div><div></div><div></div><div></div><div></div><div class="rr"></div><div class="g"></div><div class="g"></div><div></div><div class="rr"></div><div class="g"></div><div></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="rr"></div><div class="g"></div><div></div><div></div><div></div><div></div><div></div><div class="g"></div><div class="rr"></div></div>
-                        </td>
-                        <td>Dudley</td>
-                        <td title="Ƀ0.14">140,000</td>
-                        <td title="Ƀ1.560237" class="win">1,560,237</td>
-                        <td>11.14x</td>
-                        <td title="Ƀ0.299566" class="win_next">+299,566</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="g"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div></div>
-                        </td>
-                        <td>Sidney</td>
-                        <td title="Ƀ0.01">10,000</td>
-                        <td title="Ƀ0.2404" class="win">240,400</td>
-                        <td>24.04x</td>
-                        <td title="Ƀ0.030102" class="win_next">+30,102</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div></div><div class="g"></div><div class="g"></div><div class="rr"></div><div></div><div class="g"></div><div class="g"></div><div></div><div></div><div class="rr"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div></div><div></div><div></div></div>
-                        </td>
-                        <td>carenko</td>
-                        <td title="Ƀ0.000039">39</td>
-                        <td title="Ƀ0.001381" class="win">1,381</td>
-                        <td>35.41x</td>
-                        <td title="Ƀ0.000331" class="win_next">+331</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="g"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div></div>
-                        </td>
-                        <td>Lula</td>
-                        <td title="Ƀ0.006746">6,746</td>
-                        <td title="Ƀ0.162173" class="win">162,173</td>
-                        <td>24.04x</td>
-                        <td title="Ƀ0.020307" class="win_next">+20,307</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="g"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div><div class="rr"></div></div>
-                        </td>
-                        <td>Tillman</td>
-                        <td title="Ƀ0.004903">4,903</td>
-                        <td title="Ƀ0.117868" class="win">117,868</td>
-                        <td>24.04x</td>
-                        <td title="Ƀ0.014759" class="win_next">+14,759</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="minigame"><div class="g"></div><div class="g"></div><div></div><div></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div class="g"></div><div class="g"></div><div class="rr"></div><div class="g"></div><div></div><div class="g"></div><div></div><div class="g"></div><div></div><div class="g"></div><div></div><div class="g"></div><div class="g"></div></div>
-                        </td>
-                        <td>Byron</td>
-                        <td title="Ƀ0.004">4,000</td>
-                        <td title="Ƀ0.097172" class="win">97,172</td>
-                        <td>24.29x</td>
-                        <td title="Ƀ0.034982" class="win_next">+34,982</td>
-                    </tr>
+
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -242,6 +155,7 @@
 
     </div>
 </section>
+@endif
     <script>
         $(document).ready(function () {
             live();

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Common\Utility;
 use App\Http\Requests;
 use App\Models\Match;
 use App\Models\Note;
@@ -35,11 +36,12 @@ class IndexController extends AppController
         $notes = Note::language()->get();
 
         $topToday = Match::topToday();
-
+        $topWeek = Match::topWeek();
 		return view('index.index',[
             'sliders' => $sliders,
             'notes' => $notes,
             'topToday' => $topToday,
+            'topWeek' => $topWeek,
         ]);
     }
 }

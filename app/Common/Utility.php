@@ -348,4 +348,29 @@ class Utility {
         return $html;
     }
 
+    public static function GetCurrentWeekDates()
+    {
+        if (date('D') != 'Mon') {
+            $startdate = date('Y-m-d', strtotime('last Monday'));
+        } else {
+            $startdate = date('Y-m-d');
+        }
+
+//always next saturday
+        if (date('D') != 'Sat') {
+            $enddate = date('Y-m-d', strtotime('next Saturday'));
+        } else {
+            $enddate = date('Y-m-d');
+        }
+
+        $DateArray = array();
+        $timestamp = strtotime($startdate);
+        while ($startdate <= $enddate) {
+            $startdate = date('Y-m-d', $timestamp);
+            $DateArray[] = $startdate;
+            $timestamp = strtotime('+1 days', strtotime($startdate));
+        }
+        return $DateArray;
+    }
+
 }

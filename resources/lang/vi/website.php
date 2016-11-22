@@ -37,5 +37,9 @@ return [
     "text_player_info2" => "If you have a balance of 0, you can bet any amount to start a practice game.",
     "play" => "Chơi",
     "bet" => "Cược",
-
+    "live_game"=>"Live Satoshi Mines Games",
+    "top_profit"=>"Profit",
+    "top_hash"=>"Hash",
+    "top_secret"=>"Secret",
+    "top_week_win" => "Win"
 ];

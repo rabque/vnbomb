@@ -26,6 +26,35 @@
     @endforeach
 @endif
 
+<section class="pad-large grey-dark-alt-bg  text-center" id="feature">
+    <div class="container">
+        <div class="row">
+            <h3 class="light-weight">@lang("website.live_game")</h3>
+        </div>
+        <div class="row text-center">
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-lg-offset-2 col-md-offset-2">
+            <table  class="live_scores table table-hover">
+                <thead>
+                <tr>
+                    <th class="s_board">@lang("website.top_week_board")</th>
+                    <th class="s_player">@lang("website.top_week_player")</th>
+                    <th class="s_bet">@lang("website.top_week_bet")</th>
+                    <th class="s_win">@lang("website.top_week_win")</th>
+                    <th class="s_profit">@lang("website.top_profit")</th>
+                    <th class="s_hash">@lang("website.top_hash")</th>
+                    <th class="s_secret">@lang("website.top_secret")</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+</section>
+
 <section class="pad-large while-alt-bg  text-center" id="feature">
     <div class="container">
         <div class="row">
@@ -50,7 +79,7 @@
     </div>
 </section>
 
-
+@if(!empty($topToday))
 <section class="pad-large  grey-dark-alt-bg text-center" id="feature">
     <div class="container">
         <div class="row">
@@ -68,36 +97,14 @@
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach($topToday as $item)
                     <tr>
-                        <td class="l_player"><span style="color:white; background-color:#d21a2f">Madness</span></td>
-                        <td title="Ƀ5.909802">5,909,802</td>
-                        <td title="Ƀ6.918006">6,918,006</td>
-                        <td title="Ƀ1.008204">1,008,204</td>
+                        <td class="l_player"><span class="label label-{{ $item["label"] }}">{{ $item["name"]  }}</span></td>
+                        <td title="Ƀ5.909802">{{ $item["amount_bet"]  }}</td>
+                        <td title="Ƀ6.918006">{{ $item["amount_won"]  }}</td>
+                        <td title="Ƀ1.008204">{{ $item["total_win"]  }}</td>
                     </tr>
-                    <tr>
-                        <td class="l_player"><span style="color:white; background-color:#8a9658">Alta</span></td>
-                        <td title="Ƀ11.577568">11,577,568</td>
-                        <td title="Ƀ12.332805">12,332,805</td>
-                        <td title="Ƀ0.755237">755,237</td>
-                    </tr>
-                    <tr>
-                        <td class="l_player"><span style="color:white; background-color:#8f2537">Give me the fucking money </span></td>
-                        <td title="Ƀ11.808649">11,808,649</td>
-                        <td title="Ƀ12.276469">12,276,469</td>
-                        <td title="Ƀ0.46782">467,820</td>
-                    </tr>
-                    <tr>
-                        <td class="l_player"><span style="color:black; background-color:#b4e36d">okirr</span></td>
-                        <td title="Ƀ10.983242">10,983,242</td>
-                        <td title="Ƀ11.400029">11,400,029</td>
-                        <td title="Ƀ0.416787">416,787</td>
-                    </tr>
-                    <tr>
-                        <td class="l_player"><span style="color:white; background-color:#1ccb84">bla</span></td>
-                        <td title="Ƀ7.801906">7,801,906</td>
-                        <td title="Ƀ8.104382">8,104,382</td>
-                        <td title="Ƀ0.302476">302,476</td>
-                    </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -106,7 +113,7 @@
 
     </div>
 </section>
-
+@endif
 
 <section class="pad-large  while-alt-bg text-center" id="feature">
     <div class="container">
@@ -235,7 +242,38 @@
 
     </div>
 </section>
+    <script>
+        $(document).ready(function () {
+            live();
+        });
 
+        function live(){
+            $.ajax({
+                method: "POST",
+                dateType: "JSON",
+                url: BASE_URL + "/api/game/live"
+            })
+            .done(function( msg ) {
+                var html = "";
+                $.each(msg, function(i, item) {
+                    html += '<tr>';
+                    html += ' <td class="s_board">'+ item.match_click +'</td>';
+                    html += ' <td class="s_player"><span class="label label-'+item.label+'"> '+ item.name +'</span></td>';
+                    html += ' <td class="s_bet">'+ item.bet +'</td>';
+                    html += ' <td class="s_win">'+ item.win +'</td>';
+                    html += ' <td class="s_profit">+'+ item.profit +'</td>';
+                    html += ' <td class="s_hash"><input type="text" value="'+ item.hash +'"></td>';
+                    html += ' <td class="s_secret"><input type="text" value="'+ item.secret +'"></td>';
+                    html += "</tr>";
+                });
+              $(".live_scores tbody").append(html);
+            })
+            .fail(function( jqXHR, textStatus, errorThrown ) {
+
+            });
+        }
+    </script>
 
 
 @endsection
+

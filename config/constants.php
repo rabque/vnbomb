@@ -15,4 +15,5 @@ return [
     "DEFAULT_PASSWORD" => "123456",
     "POINT_BIT" => 0.000001,
     "POINT_BIT_VIEW" => 1000000,
+    "LABEL" => array("default","primary","success","info","warning","danger")
 ];

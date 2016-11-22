@@ -307,6 +307,7 @@ class Utility {
     }
 
 
+
     public static function formatBTC($value) {
         $value = sprintf('%.8f', $value);
         $value = rtrim($value, '0');
@@ -315,13 +316,36 @@ class Utility {
     }
 
     public static function formatNumber($number){
-       // $number = self::formatBTC(self::convertToBTCFromSatoshi($number));
+
+        $number = self::formatBTC(self::convertToSatoshifromBTC($number));
+        $number = ($number > 0)?ceil($number):0;
+        $numberFormat = new \NumberFormatter("it-IT", \NumberFormatter::DECIMAL);
+        $number = $numberFormat->format($number);
         return $number;
     }
     public static function bcdiv_cust( $first, $second, $scale = 0 )
     {
         $res = $first / $second;
         return round( $res, $scale );
+    }
+
+    public static  function builHtmlClick($click){
+        $html = "";
+        if(!empty($click)){
+            $html .= "<ul class='match_history'>";
+            foreach($click as $key=>$value){
+                $class = "";
+                if($value == 1){
+                    $class = "m_click";
+                }
+                if($value == 2){
+                    $class = "m_bomb";
+                }
+
+                $html .= "<li class='$class'></li>";
+            }
+        }
+        return $html;
     }
 
 }

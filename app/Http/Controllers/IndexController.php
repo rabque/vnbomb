@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\Match;
 use App\Models\Note;
 use App\Models\Slider;
 
@@ -32,9 +33,13 @@ class IndexController extends AppController
     {
         $sliders = Slider::language()->get();
         $notes = Note::language()->get();
+
+        $topToday = Match::topToday();
+
 		return view('index.index',[
             'sliders' => $sliders,
             'notes' => $notes,
+            'topToday' => $topToday,
         ]);
     }
 }

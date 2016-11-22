@@ -29,10 +29,10 @@ class MatchClick extends Model
 			throw new \Exception("Invalid point game type",500);
 		}
 		//Check is click
-		$isClick = self::where("matchID",$match["game_hash"])->where("guess",$click)->get()->first();
+		$isClick = self::where("game_hash",$match["game_hash"])->where("guess",$click)->get()->first();
 		if(!empty($isClick)) throw new \Exception("Invalid click data",500);
 
-		$lastClick = self::where("matchID",$match["game_hash"])->get();
+		$lastClick = self::where("game_hash",$match["game_hash"])->get();
 		try{
 			\DB::beginTransaction();
 			// create user if not exist
@@ -55,7 +55,7 @@ class MatchClick extends Model
 			//$numberLastNext = (!empty($numberLastNext))?$numberLastNext:$next;
 			$random_string = str_random(6);
 			$matchClick = new MatchClick();
-			$matchClick->matchID = $input["game_hash"];
+			$matchClick->game_hash = $input["game_hash"];
 			$matchClick->guess = $click;
 			$matchClick->stake = $match["default_stake"] + $numberLastNext + $next;
 			$matchClick->next = $next;

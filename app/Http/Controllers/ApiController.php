@@ -75,7 +75,7 @@ class ApiController extends AppController
                 $player = (new Player())->getPlayer($match["playerID"]);
                 $matchClick = new MatchClick();
                 $clickdata = $matchClick->saveClick($input,$match);
-                $bit = Utility::bcdiv_cust(Utility::formatNumber($clickdata["next"]) * config("constants.POINT_BIT_VIEW"),1);
+                $bit = Utility::bcdiv_cust($clickdata["next"] * config("constants.POINT_BIT_VIEW"),1);
                 if(!empty($clickdata)){
                     $clickdata["status"] = "success";
                     if($clickdata["outcome"] == "bomb"){
@@ -143,6 +143,11 @@ class ApiController extends AppController
         $response["status"] =  "success";
         $response["address"] =  "19VcUAEk6tW6UFqK9PHxPEeLPFmFdJ4Mit";
 
+        return response()->json($response);
+    }
+
+    public function live(){
+        $response = Match::liveGame();
         return response()->json($response);
     }
 }

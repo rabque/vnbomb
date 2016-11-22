@@ -25,8 +25,14 @@ class Match extends Model
 
 	public function matchclick()
 	{
-		return $this->hasMany('App\Models\MatchClick', 'matchID', 'matchID');
+		return $this->hasMany('App\Models\MatchClick', 'game_hash', 'game_hash');
 	}
+
+	public function players()
+	{
+		return $this->belongsTo('App\Models\Player', 'playerID','uuid');
+	}
+
 
 	public function saveMatch($input, Player $player){
 		$numberOfMine =  $input["num_mines"];
@@ -107,4 +113,103 @@ class Match extends Model
 		}
 		return json_encode($data,true);
 	}
+
+	public static function liveGame(){
+		$data = Match::with("players")
+						->with("matchclick")
+						->limit(10)
+						->orderBy("match.id","DESC")
+						->get();
+		$live = array();
+		if(!empty($data)){
+			foreach($data as $value){
+				$profit = $value->stake - $value->bet;
+				$relations = $value->getRelations();
+				$matchClick = array();
+				$boms = json_decode($value->minePositions,true) ;
+				if(!empty($relations['matchclick'])){
+					$relations['matchclick'] = $relations['matchclick']->toArray();
+					$relations['matchclick'] = array_column($relations['matchclick'],"guess");
+					foreach(range(1,25) as $numb){
+						$matchClick[$numb] = 0;
+						if(in_array($numb,$relations['matchclick'])){
+							$matchClick[$numb] = 1;
+						}
+						if(in_array($numb,$boms)){
+							$matchClick[$numb] = 2;
+						}
+					}
+				}
+				$label = config("constants.LABEL");
+
+				$live[] = array(
+					"name" => $relations['players']->username,
+					"bet" => Utility::formatNumber($value->bet),
+					"win" => Utility::formatNumber($value->stake),
+					"profit" =>  Utility::formatNumber($profit),
+					"hash" => $value->game_hash,
+					"secret" => $value->secret,
+					"match_click" => Utility::builHtmlClick($matchClick),
+					"label" =>$label[array_rand(range(0,5))]
+				);
+			}
+		}
+		return $live;
+	}
+
+	public static function topToday($limit = 5){
+		$data = Match::with("players")
+			->select(\DB::raw("SUM(match.bet) as amount_bet"),\DB::raw("SUM(match.stake) as amount_won"),\DB::raw("COUNT(match.playerID) as total_win"),"playerID")
+			->groupBy("match.playerID")
+			->limit($limit)
+			->orderBy("match.id","DESC")
+			->get();
+		$live = array();
+		if(!empty($data)){
+			$numberFormat = new \NumberFormatter("it-IT", \NumberFormatter::DECIMAL);
+			foreach($data as $value){
+				$relations = $value->getRelations();
+				$label = config("constants.LABEL");
+				$live[] = array(
+					"name" => $relations['players']->username,
+					"amount_bet" => Utility::formatNumber($value->amount_bet),
+					"amount_won" => Utility::formatNumber($value->amount_won),
+					"total_win" => $numberFormat->format($value->total_win),
+					"label" =>$label[array_rand(range(0,5))]
+				);
+			}
+		}
+		return $live;
+	}
+
+	public static function topWeek($limit = 10){
+		$data = Match::with("players")
+			->with("matchclick")
+			->select(\DB::raw("SUM(match.bet) as amount_bet"),\DB::raw("SUM(match.stake) as amount_won"),\DB::raw("COUNT(match.playerID) as total_win"),"playerID")
+
+			->groupBy("match.playerID")
+			->limit($limit)
+			->orderBy("match.id","DESC")
+			->get();
+		$live = array();
+		if(!empty($data)){
+			$numberFormat = new \NumberFormatter("it-IT", \NumberFormatter::DECIMAL);
+			foreach($data as $value){
+				$relations = $value->getRelations();
+				$label = config("constants.LABEL");
+				$live[] = array(
+					"name" => $relations['players']->username,
+					"amount_bet" => Utility::formatNumber($value->amount_bet),
+					"amount_won" => Utility::formatNumber($value->amount_won),
+					"total_win" => $numberFormat->format($value->total_win),
+					"label" =>$label[array_rand(range(0,5))]
+				);
+			}
+		}
+		return $live;
+	}
+
+
+
+
 }

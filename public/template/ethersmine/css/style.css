@@ -1389,7 +1389,7 @@ ul.addr_links li {
 	float: none;
 	margin: 1em auto;
 }
-.live_scores th,.player_scores th{
+.live_scores th,.player_scores th,.game_scores th{
 	text-align: center;
 }
 .live_scores input {

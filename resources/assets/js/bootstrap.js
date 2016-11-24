@@ -43,3 +43,25 @@ Vue.http.interceptors.push((request, next) => {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+
+var socketURL = 'http://103.242.72.169:3000';
+
+var socket = io(socketURL);
+socket.on('live-match:App\\Events\\LiveMatch', function (event) {
+    var html = "";
+    $.each(event.match, function(i, item) {
+        console.log(item);
+        html += '<tr>';
+        html += ' <td class="s_board">'+ item.match_click +'</td>';
+        html += ' <td class="s_player"><span class="label label-'+item.label+'"> '+ item.name +'</span></td>';
+        html += ' <td class="s_bet">'+ item.bet +'</td>';
+        html += ' <td class="s_win">'+ item.win +'</td>';
+        html += ' <td class="s_profit">+'+ item.profit +'</td>';
+        html += ' <td class="s_hash"><input type="text" value="'+ item.hash +'"></td>';
+        html += ' <td class="s_secret"><input type="text" value="'+ item.secret +'"></td>';
+        html += "</tr>";
+    });
+    $(".live_scores tbody").prepend(html);
+});
+

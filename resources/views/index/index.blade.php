@@ -1,5 +1,7 @@
 @extends("layouts.master")
 @section("content")
+<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+<script src="{{ asset('/js/app.js?t='.time()) }}"></script>
 @if(!empty($sliders))
     @foreach($sliders as $slider)
         <section id="top" style="background: url('{{ $slider->image  }}'); background-size: cover">
@@ -189,4 +191,3 @@
     </script>
 
 @endsection
-

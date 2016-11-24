@@ -51,7 +51,6 @@ var socket = io(socketURL);
 socket.on('live-match:App\\Events\\LiveMatch', function (event) {
     var html = "";
     $.each(event.match, function(i, item) {
-        console.log(item);
         html += '<tr>';
         html += ' <td class="s_board">'+ item.match_click +'</td>';
         html += ' <td class="s_player"><span class="label label-'+item.label+'"> '+ item.name +'</span></td>';
@@ -64,4 +63,3 @@ socket.on('live-match:App\\Events\\LiveMatch', function (event) {
     });
     $(".live_scores tbody").prepend(html);
 });
-

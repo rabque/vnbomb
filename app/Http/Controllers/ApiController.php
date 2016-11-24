@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Common\Utility;
+use App\Events\LiveMatch;
 use App\Models\Match;
 use App\Models\MatchClick;
 use App\Models\Player;
@@ -80,6 +81,8 @@ class ApiController extends AppController
                     $clickdata["status"] = "success";
                     if($clickdata["outcome"] == "bomb"){
                         $clickdata["message"] = "Game over! You hit a mine on tile <span>{$input['guess']}</span> and lost <span>$bit bits</span> ";
+                        $match = Match::liveGame(1);
+                        broadcast(new LiveMatch($match));
                     }else{
 
                         $clickdata["message"] = "You found <span>$bit bits</span> in tile {$input['guess']}";
@@ -124,7 +127,8 @@ class ApiController extends AppController
             $response["message"] =  "Cashed out $stake practice bits.";
             $response["game_id"] =  $match->id;
             $response["random_string"] =  $random_string;
-
+            $match = Match::liveGame(1);
+            broadcast(new LiveMatch($match));
         }else{
             $response["status"] =  "error";
             $response["message"] =  "Invalid cash out game ";

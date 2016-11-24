@@ -114,10 +114,10 @@ class Match extends Model
 		return json_encode($data,true);
 	}
 
-	public static function liveGame(){
+	public static function liveGame($limit = 10){
 		$data = Match::with("players")
 						->with("matchclick")
-						->limit(10)
+						->limit($limit)
 						->orderBy("match.id","DESC")
 						->get();
 		$live = array();

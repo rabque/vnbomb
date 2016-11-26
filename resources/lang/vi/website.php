@@ -41,5 +41,9 @@ return [
     "top_profit"=>"Profit",
     "top_hash"=>"Hash",
     "top_secret"=>"Secret",
-    "top_week_win" => "Win"
+    "top_week_win" => "Win",
+    "account_success" => "Update your account success",
+    "account_error" => "Error Update your account",
+    "current_password" => "Current password",
+    "invalid_password" => "Wrong password"
 ];

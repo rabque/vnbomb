@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-2">
-                <div class="logo"> <a href="/"> <img src="{{ $configs->logo }}" alt=""></a> </div>
+                <div class="logo"> <a href="/"> <img src="{{ url($configs->logo) }}" alt=""></a> </div>
                 <button class="menu visible-xs" id="menu"></button>
             </div>
             <div class="col-sm-10">

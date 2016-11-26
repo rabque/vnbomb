@@ -287,7 +287,7 @@ Game.prototype.message = function(e, t) {
         }
     }).done(function(a) {
         if ("success" == a.status) {
-            updateBalance(parseFloat(a.win)), e.jqel.find(".inplay p").html("Won: <span>Ƀ" + a.win + "</span>"), e.jqel.find(".cashout").hide(), e.message(a.message, "won"), e.message("Secret: " + a.mines + "-" + a.random_string), e.message('Share this game: <input type="text" value="'+ BASE_URL +'/s/' + a.game_id + "/" + a.random_string + '/">');
+            updateBalance(parseFloat(a.win)), e.jqel.find(".inplay p").html("Won: <span>Ƀ" + a.win + "</span>"), e.jqel.find(".cashout").hide(), e.message(a.message, "won"), e.message("Secret: " + a.mines + "-" + a.random_string), e.message('Share this game: <input type="text" value="'+ BASE_URL +'/games/share/' + a.game_id + "/" + a.random_string + '/">');
             var s = a.mines.split("-");
             for (i = 0; i < s.length; i++) e.jqel.find('li[data-tile="' + s[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>')
         } else "error" == a.status && e.message(a.message, "error")
@@ -314,7 +314,7 @@ Game.prototype.message = function(e, t) {
     }).done(function(n) {
         if (busy = !1, e.spin(!1), e.removeClass("active_tile"), t.betNumber++, "success" == n.status) {
             if (t.guesses++, "real" == t.gametype, "bitcoins" == n.outcome && (t.change_stake(1e6 * n.stake), animate_val(t.jqel.find(".next"), 1e6 * n.next.toFixed(6)), sound_enabled && sound.play("win"), t.message(n.message, "find"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed").html('<span class="tile_val">+' + abbrNum(1e6 * n.change) + "</span>")), "bomb" == n.outcome) {
-                t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="glyphicon glyphicon-certificate"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="' + BASE_URL + '/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
+                t.message(n.message, "bomb"), t.jqel.find('li[data-tile="' + n.guess + '"]').addClass("pressed bomb").html('<i class="glyphicon glyphicon-certificate"></i>'), t.message("Secret: " + n.bombs + "-" + n.random_string), t.message('Share this game: <input type="text" value="' + BASE_URL + '/games/share/' + n.game_id + "/" + n.random_string + '/">'), t.change_stake(0), t.jqel.find(".cashout").hide();
                 var o = n.bombs.split("-");
                 for (i = 0; i < o.length; i++) t.jqel.find('li[data-tile="' + o[i] + '"]').addClass("reveal").html('<i class="glyphicon glyphicon-certificate"></i>');
                 sound_enabled && sound.play("lose")
@@ -378,9 +378,9 @@ $(document).ready(function() {
         games.push(new Game(e, void 0, t))
     })
 }), $(document).on("click", "#password", function(e) {
-    $(".pw_modal input").val(""), $(".password_messages").html(""), $(".shadow").fadeIn(250), setTimeout(function() {
+   /* $(".pw_modal input").val(""), $(".password_messages").html(""), $(".shadow").fadeIn(250), setTimeout(function() {
         $(".pw_modal").fadeIn(250)
-    }, 150)
+    }, 150)*/
 }), $(document).on("click", ".pw_modal .line_btn_green", function(e) {
     e.preventDefault();
     var t = $(this).parent().children("#old_password").val(),
@@ -422,3 +422,36 @@ $(document).ready(function() {
 }), $(document).keydown(function(e) {
     $("#hotkeys").is(":checked") && (32 != e.which || $("#player_name").is(":focus") || $(".modal").is(":visible") || ($("#start_game").addClass("active"), e.preventDefault()))
 });
+
+
+function account(isUpdate) {
+    var data = {
+        username: $("#username").val(),
+        password: $("#password").val()
+    }
+    if (isUpdate == 1){
+        data.current_password =  $("#current_password").val()
+    }
+    $.ajax({
+            method: "POST",
+            dateType: "JSON",
+            data: data,
+            url: BASE_URL + "/api/account/change"
+        })
+        .done(function (msg) {
+            if(msg.success == true){
+                $("#account_msg").html("<div class='alert alert-success'>"+ msg.message +"</div>");
+            }else{
+                $("#account_msg").html("<div class='alert alert-danger'>"+ msg.message +"</div>");
+            }
+            setTimeout(function() {
+                //window.location.reload(true);
+            }, 2000);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            $("#account_msg").html("<div class='alert alert-danger'>"+errorThrown+"</div>").delay(5000).hide(0);
+            setTimeout(function() {
+              // window.location.reload(true);;
+            }, 2000);
+        });
+}

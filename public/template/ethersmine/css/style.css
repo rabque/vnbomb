@@ -1421,3 +1421,14 @@ ul.addr_links li {
 .s_profit{
 	color: #3d0;
 }
+.game_review{
+	background: #fafafa none repeat scroll 0 0;
+	border: 1px solid #dddddd;
+	display: table;
+	margin: 20px auto;
+	padding: 40px 0;
+	width: 80%;;
+}
+.game_review .label{
+	color: #333333;
+}

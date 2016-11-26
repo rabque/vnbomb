@@ -22,7 +22,7 @@ Route::get('/', function(App\Models\AppModel $model)
     return $controller->callAction('index', array());
 });
 $admin = config('laraadmin.adminRoute');
-$notRoute = array($admin,"logout","login");
+$notRoute = array($admin,"logout","login","games");
 $pathName = explode("/",Request::getPathInfo());
 $pathName = (!empty($pathName[1]))?$pathName[1]:0;
 if (!in_array($pathName,$notRoute))
@@ -30,7 +30,6 @@ if (!in_array($pathName,$notRoute))
     Route::resource('articles', 'ArticleController');
 
     /* ================== Homepage ================== */
-
 
 
     Route::get('/{slug}', function(App\Models\AppModel $model,$slug) {
@@ -54,7 +53,8 @@ if (!in_array($pathName,$notRoute))
         }
     })->where('slug', '[a-z0-9-.]+');
 }
-
+Route::get('games', "GamesController@index");
+Route::get('games/share/{id}/{random}', "GamesController@share")->where(['id' => '[0-9]+', 'random' => '[a-zA-Z]+']);
 
 
 /* ================== Homepage + Admin Routes ================== */

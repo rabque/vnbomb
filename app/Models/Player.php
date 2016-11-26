@@ -23,7 +23,7 @@ class Player extends Model
 
 	public function savePlayer($input){
 		$username = (!empty($input["username"]))?Utility::removeScripts($input["username"]):Utility::generateRandomString();
-		$password = (!empty($input["password"]))?Utility::removeScripts($input["password"]):config("constants.DEFAULT_PASSWORD");
+		$password = (!empty($input["password"]))?Utility::removeScripts($input["password"]):"";
 		$uuid = Utility::removeScripts($input["uuid"]);
 		try{
 			// create user if not exist
@@ -63,6 +63,38 @@ class Player extends Model
 			throw new \Exception("Not found Player");
 		}
 		return $player;
+	}
+
+	public static function updatePlayer($input,$uuid, $player = null){
+		if(empty($input["username"]) && empty($input["password"])) return false;
+		$username = (!empty($input["username"]))?Utility::removeScripts($input["username"]):"";
+		$password = (!empty($input["password"]))?Utility::removeScripts($input["password"]):"";
+		try{
+
+			// create user if not exist
+			$player = (!empty($player))?$player:Player::where("uuid",$uuid)->get()->first();
+
+			\DB::beginTransaction();
+			if(!empty($player)){
+				$update = [];
+				if((!empty($input["password"])) && $password != $player->password){
+					$update["password"] = \Hash::make($password);
+				}
+				if((!empty($input["username"])) && $username != $player->username){
+					$update["username"] = $username;
+				}
+				if(!empty($update)){
+					$return = self::where("id",$player->id)->update($update);
+				}
+			}
+			\DB::commit();
+			return $return;
+		}catch(\Exception $e){
+			\DB::rollback();
+			var_dump($e->getCode());
+			var_dump($e->getLine());
+			throw new \Exception($e->getMessage(),500);
+		}
 	}
 
 }

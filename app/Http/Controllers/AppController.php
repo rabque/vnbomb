@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\Social;
 use Webpatser\Uuid\Uuid as UuidWeb;
 use Illuminate\Routing\Route;
+use Session;
 /**
  * Class AppController
  * @package App\Http\Controllers
@@ -38,7 +39,7 @@ class AppController extends Controller
         //unique cookie
         $ip = Utility::get_client_ip();
         $this->uuid = $uuid = sha1(UuidWeb::generate(5,$ip,UuidWeb::NS_DNS));
-
+        Session::put("uuid",$uuid);
         \View::share("uuid", $uuid);
         \View::share("menuTop",$menuTop);
         \View::share("menuFooter",$menuFooter);

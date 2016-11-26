@@ -260,6 +260,8 @@ class Utility {
     }
 
     public static function removeScripts($str) {
+        $str = trim($str);
+        $str = strip_tags($str);
         $regex =
             '/(<link[^>]+rel="[^"]*stylesheet"[^>]*>)|' .
             '<script[^>]*>.*?<\/script>|' .
@@ -371,6 +373,28 @@ class Utility {
             $timestamp = strtotime('+1 days', strtotime($startdate));
         }
         return $DateArray;
+    }
+
+
+    /**
+     * Remove slashes from strings, arrays and objects
+     *
+     * @param    mixed   input data
+     * @return   mixed   cleaned input data
+     */
+    public static function stripslashesFull($input)
+    {
+        if (is_array($input)) {
+            $input = array_map('Utils::stripslashesFull', $input);
+        } elseif (is_object($input)) {
+            $vars = get_object_vars($input);
+            foreach ($vars as $k=>$v) {
+                $input->{$k} = Utils::stripslashesFull($v);
+            }
+        } else {
+            $input = stripslashes($input);
+        }
+        return $input;
     }
 
 }

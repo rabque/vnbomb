@@ -9,6 +9,7 @@ use App\Models\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Webpatser\Uuid\Uuid as UuidWeb;
+use Session;
 /**
  * Class ApiController
  * @package App\Http\Controllers
@@ -153,5 +154,65 @@ class ApiController extends AppController
     public function live(){
         $response = Match::liveGame();
         return response()->json($response);
+    }
+
+
+    public function account(Request $request){
+        if(Session::has("uuid") == false){
+            throw new \Exception("Invalid player ",500);
+        }
+        $requestParams = ['username','password','current_password'];
+        $input = $request->only($requestParams);
+        $error = "";
+
+        $uuid = Session::get("uuid");
+        $player = Player::where("uuid",$uuid)->get()->first();
+        if(empty($player)){
+            $error .= "Invalid player <br>";
+        }
+
+        if(empty($input["username"])){
+            $error .= "Invalid parameter username  <br>";
+        }else{
+            $input["username"] = Utility::removeScripts($input["username"]);
+            $checkUsername = Player::select("id")->where("username",$input["username"])->get()->first();
+            if(!empty($checkUsername) &&  $input["username"] != $player->username ){
+                $error .= "Username exist  <br>";
+            }
+        }
+        if(empty($input["password"])){
+            $error .= "Invalid parameter password <br>";
+        }
+
+
+
+        if(!empty($player->password)){
+            if(empty($input["current_password"])){
+                $error .= "Empty current password <br>";
+            }
+            if(\Hash::check($input["current_password"], $player->password) == false){
+                $error .= "Invalid current password <br>";
+            }
+
+        }
+        if(!empty($error)){
+            $response["success"] = false;
+            $response["message"] = $error;
+        }else{
+            $update = Player::updatePlayer($input,$uuid,$player);
+            $response = [];
+            if($update == true){
+                $response["success"] = true;
+                $response["message"] = trans("website.account_success");
+            }else{
+                $response["success"] = true;
+                $response["message"] = $update["error"];
+
+            }
+
+        }
+
+        return response()->json($response);
+
     }
 }

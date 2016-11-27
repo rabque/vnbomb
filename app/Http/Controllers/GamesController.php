@@ -60,7 +60,8 @@ class GamesController extends AppController
         if($lookPlayer == false){
             $view = view('games.index',[
                 "player"    => $newPlayer,
-                "lookPlayer"    => $lookPlayer
+                "lookPlayer"    => $lookPlayer,
+                "uuid" => $uuid
             ]);
             return \Response::make($view)->withCookie($cookie);
         }else{
@@ -139,6 +140,7 @@ class GamesController extends AppController
 
         return view('games.login',[
             "error" => $error,
+            "uuid" => $player->uuid
         ]);
 
     }

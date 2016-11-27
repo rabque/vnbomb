@@ -65,7 +65,7 @@ class GamesController extends AppController
             ]);
             return \Response::make($view)->withCookie($cookie);
         }else{
-            return response()->view('games.login');
+            return response()->view('games.login',["uuid" => $uuid]);
         }
 
 

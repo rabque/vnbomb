@@ -24,6 +24,19 @@
                         @endif
                         @section("menu-account")
                         @show
+
+                        <?php $lang = config('app.locales');
+                            if(!empty($lang) && count($lang) > 1){
+                                ?>
+                        <li>
+                            <?php  foreach($lang as $k=>$v){ ?>
+                           <a class="langicon" href="{{ url($k)  }}"><img src="{{ asset("/img/lang_$k.png") }}"> </a>
+                        <?php } ?>
+                        </li>
+                                <?php
+                            }
+                        ?>
+
                     </ul>
 
                     <!---->

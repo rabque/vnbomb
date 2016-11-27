@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Player;
 use Illuminate\Cookie\Middleware\EncryptCookies as BaseEncrypter;
-
+use Closure;
 class EncryptCookies extends BaseEncrypter
 {
     /**
@@ -12,6 +13,8 @@ class EncryptCookies extends BaseEncrypter
      * @var array
      */
     protected $except = [
-        //
+        'sessionid'
     ];
+
+
 }

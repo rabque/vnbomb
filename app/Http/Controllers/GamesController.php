@@ -5,10 +5,13 @@ use App\Models\Article;
 use App\Models\Match;
 use App\Models\Player;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use SEO;
+
 /**
  * Class ArticlesController
  * @package App\Http\Controllers
@@ -40,13 +43,30 @@ class GamesController extends AppController
         }
         $player = new Player();
         $newPlayer = $player->savePlayer(["uuid"=>$this->uuid]);
+        $sessionid = $this->request->cookie('sessionid');
+        $lookPlayer = false;
+        $cookie= "";
+        if($sessionid != $newPlayer->sessionid && $newPlayer->isNew == false && !empty($newPlayer->password)){
+            $lookPlayer = true;
+        }else{
+            $cookie = cookie('sessionid',$newPlayer->sessionid,null,null,null,false,false);;
+        }
+
         SEO::setTitle("Games");
         SEO::setDescription("Games");
         SEO::opengraph()->setUrl(url("/games"));
         SEO::opengraph()->addProperty('type', 'articles');
-        return view('games.index',[
-            "player"    => $newPlayer
-        ]);
+
+        if($lookPlayer == false){
+            $view = view('games.index',[
+                "player"    => $newPlayer,
+                "lookPlayer"    => $lookPlayer
+            ]);
+            return \Response::make($view)->withCookie($cookie);
+        }else{
+            return response()->view('games.login');
+        }
+
 
     }
 
@@ -87,6 +107,38 @@ class GamesController extends AppController
         return view('games.share',[
             "match" => $match,
             "dataMatch" => $dataMatch
+        ]);
+
+    }
+
+    public function login(Request $request){
+
+
+        $requestParams = ['password','secret'];
+        $input = $request->only($requestParams);
+        if(!isset($input["secret"]) || empty($input["secret"])){
+            throw new \Exception("Invalid data",500);
+        }
+
+        $input["secret"] = Utility::removeScripts($input["secret"]);
+        $player = new Player();
+        $player = $player->getPlayer($input["secret"]);
+        $error = "";
+
+        if(!empty($player->password)){
+            if(\Hash::check($input["password"], $player->password) == false){
+                $error = trans("website.invalid_password");
+            }else{
+                $sessionid = sha1($player->username.$player->uuid);
+               $cookie = cookie('sessionid',$sessionid,null,null,null,false,false);
+               return redirect("/games?uuid=".$input["secret"])->withCookie($cookie);
+            }
+        }else{
+            return redirect("/games?uuid=".$input["secret"]);
+        }
+
+        return view('games.login',[
+            "error" => $error,
         ]);
 
     }

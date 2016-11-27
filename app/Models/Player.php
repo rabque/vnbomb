@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Common\Utility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Webpatser\Uuid\Uuid as UuidWeb;
+use Illuminate\Cookie\CookieJar;
 
 class Player extends Model
 {
@@ -30,11 +32,17 @@ class Player extends Model
 			$player = Player::where("uuid",$input["uuid"])->get()->first();
 			\DB::beginTransaction();
 			if(empty($player)){
+
+				$sessionid = sha1($username.$uuid);
+				cookie('sessionid',$sessionid,null,null,null,true,false);
 				$player = new Player();
 				$player->username = $username;
-				$player->password = \Hash::make($password);
+			//	$player->password = \Hash::make($password);
 				$player->uuid = $uuid;
+				$player->sessionid = $sessionid;
+
 				$player->save();
+				$player->isNew = true;
 			}else{
 				$update = [];
 				if((!empty($input["password"])) && $password != $player->password){
@@ -46,7 +54,9 @@ class Player extends Model
 				if(!empty($update)){
 					self::where("id",$player->id)->update($update);
 				}
-
+				$player->isNew = false;
+				/*$sessionid = sha1($player->username.$player->uuid);
+				\Cookie::queue('sessionid',$sessionid,null,"/games",null,true,false);*/
 			}
 			\DB::commit();
 			return $player;
@@ -60,7 +70,7 @@ class Player extends Model
 		if(empty($uuid)) return false;
 		$player = Player::where("uuid",$uuid)->get()->first();
 		if(empty($player)){
-			throw new \Exception("Not found Player");
+			throw new \Exception("Invalid data");
 		}
 		return $player;
 	}

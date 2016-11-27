@@ -1454,3 +1454,9 @@ pre{
 	z-index: 100000000;
 	position: relative;
 }
+.langicon{
+	float: left;
+	padding: 0 3px !important;
+	position: relative;
+	top: 5px;
+}

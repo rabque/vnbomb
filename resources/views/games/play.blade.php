@@ -1,3 +1,4 @@
+@if($lookPlayer == false)
 <script src="{{ asset('/js/BetMineBuild/TemplateData/UnityProgress.js') }}" type="text/javascript"></script>
 <div class="block_game">
     <div class="row">
@@ -97,3 +98,6 @@
 
 
 </script>
+@else
+    Khoa user
+@endif

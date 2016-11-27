@@ -45,5 +45,9 @@ return [
     "account_success" => "Update your account success",
     "account_error" => "Error Update your account",
     "current_password" => "Current password",
-    "invalid_password" => "Wrong password"
+    "invalid_password" => "Wrong password",
+    "protect_player"=>"Protected Player",
+    "enter_password"=>"Enter your password to continue playing.",
+    "Login" => "Login",
+    "password" => "Password"
 ];

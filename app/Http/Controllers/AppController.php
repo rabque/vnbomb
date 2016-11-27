@@ -37,8 +37,13 @@ class AppController extends Controller
         $socials = Social::all();
 
         //unique cookie
-        $ip = Utility::get_client_ip();
-        $this->uuid = $uuid = sha1(UuidWeb::generate(5,$ip,UuidWeb::NS_DNS));
+        $player = \Session::get("players");
+        if(!empty($player)){
+            $this->uuid = $uuid = $player->uuid;
+        }else{
+            $ip = Utility::get_client_ip();
+            $this->uuid = $uuid = sha1(UuidWeb::generate(5,$ip,UuidWeb::NS_DNS));
+        }
         Session::put("uuid",$uuid);
         \View::share("uuid", $uuid);
         \View::share("menuTop",$menuTop);

@@ -45,7 +45,7 @@ class GamesController extends AppController
         $newPlayer = $player->savePlayer(["uuid"=>$uuid]);
         $sessionid = $this->request->cookie('sessionid');
         $lookPlayer = false;
-        $cookie= "";
+
         if($sessionid != $newPlayer->sessionid && $newPlayer->isNew == false && !empty($newPlayer->password)){
             $lookPlayer = true;
         }else{
@@ -130,8 +130,12 @@ class GamesController extends AppController
             if(\Hash::check($input["password"], $player->password) == false){
                 $error = trans("website.invalid_password");
             }else{
+
                 $sessionid = sha1($player->username.$player->uuid);
+
                $cookie = cookie('sessionid',$sessionid,null,null,null,false,false);
+                \Session::set("players",$player);
+
                return redirect("/games?uuid=".$input["secret"])->withCookie($cookie);
             }
         }else{

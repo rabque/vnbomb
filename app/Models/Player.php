@@ -58,6 +58,7 @@ class Player extends Model
 				/*$sessionid = sha1($player->username.$player->uuid);
 				\Cookie::queue('sessionid',$sessionid,null,"/games",null,true,false);*/
 			}
+			\Session::set("players",$player);
 			\DB::commit();
 			return $player;
 		}catch(\Exception $e){

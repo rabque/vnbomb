@@ -38,11 +38,11 @@ class GamesController extends AppController
             throw new \Exception("Page not found",404);
         }
         $uuid = $this->request->get("uuid");
-        if($uuid != $this->uuid){
+        /*if($uuid != $this->uuid){
             throw new \Exception("Page not found",404);
-        }
+        }*/
         $player = new Player();
-        $newPlayer = $player->savePlayer(["uuid"=>$this->uuid]);
+        $newPlayer = $player->savePlayer(["uuid"=>$uuid]);
         $sessionid = $this->request->cookie('sessionid');
         $lookPlayer = false;
         $cookie= "";

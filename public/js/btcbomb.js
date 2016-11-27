@@ -445,13 +445,13 @@ function account(isUpdate) {
                 $("#account_msg").html("<div class='alert alert-danger'>"+ msg.message +"</div>");
             }
             setTimeout(function() {
-                //window.location.reload(true);
+                window.location.reload(true);
             }, 2000);
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             $("#account_msg").html("<div class='alert alert-danger'>"+errorThrown+"</div>").delay(5000).hide(0);
             setTimeout(function() {
-              // window.location.reload(true);;
+              window.location.reload(true);;
             }, 2000);
         });
 }

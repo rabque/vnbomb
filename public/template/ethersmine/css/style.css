@@ -1432,3 +1432,25 @@ ul.addr_links li {
 .game_review .label{
 	color: #333333;
 }
+.big_err{
+	width: 80%;
+	margin: 10px auto;
+	text-align: center;
+}
+.big_err .hugemine{
+	color: #f21;
+	font-size: 7em
+}
+.big_err h2 {
+	font-size: 3em;
+	line-height: 1em;
+	margin: 0.5em 0;
+}
+.big_err p {
+	margin: 1em auto;
+	max-width: 30em;
+}
+pre{
+	z-index: 100000000;
+	position: relative;
+}

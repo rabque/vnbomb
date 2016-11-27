@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 
+use App\Common\Utility;
 use Closure;
 use Illuminate\Routing\Redirector;
 use Illuminate\Http\Request;
@@ -47,16 +48,28 @@ class Language
             Session::put("locate",$locale);
             Session::put("locate_value",$lang->id);
         }else{
+            //set session by id
+
             if(Session::has("locate")){
                 $locale = Session::get("locate");
                 if(in_array($locale,array_keys($lang))){
                     $this->app->setLocale($locale);
                 }
+            }else{
+                $locateByID = Utility::ip_visitor_country();
+                if(isset($locateByID['geoplugin_countryCode']) && !empty($locateByID['geoplugin_countryCode'])){
+                    $locale = ($locateByID['geoplugin_countryCode']=='VN')?'vi':'en';
+                    $lang = $this->getLang($locale);
+                    $this->app->setLocale($locale);
+                    Session::put("locate",$locale);
+                    Session::put("locate_value",$lang->id);
 
+                }
             }
         }
         return $next($request);
     }
+
 
     public function getLang($locate){
         $lang = \App\Models\Language::where("name",$locate)->get()->first();

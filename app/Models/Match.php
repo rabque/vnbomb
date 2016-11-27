@@ -169,14 +169,17 @@ class Match extends Model
 			$numberFormat = new \NumberFormatter("it-IT", \NumberFormatter::DECIMAL);
 			foreach($data as $value){
 				$relations = $value->getRelations();
-				$label = config("constants.LABEL");
-				$live[] = array(
-					"name" => $relations['players']->username,
-					"amount_bet" => Utility::formatNumber($value->amount_bet),
-					"amount_won" => Utility::formatNumber($value->amount_won),
-					"total_win" => $numberFormat->format($value->total_win),
-					"label" =>$label[array_rand(range(0,5))]
-				);
+				if(!empty($relations['players'])){
+					$label = config("constants.LABEL");
+					$live[] = array(
+						"name" => $relations['players']->username,
+						"amount_bet" => Utility::formatNumber($value->amount_bet),
+						"amount_won" => Utility::formatNumber($value->amount_won),
+						"total_win" => $numberFormat->format($value->total_win),
+						"label" =>$label[array_rand(range(0,5))]
+					);
+				}
+
 			}
 		}
 		return $live;
@@ -198,45 +201,47 @@ class Match extends Model
 			$numberFormat = new \NumberFormatter("it-IT", \NumberFormatter::DECIMAL);
 			foreach($data as $value){
 				$relations = $value->getRelations();
-				$matchClick = array();
-				$click = array();
-				$next = 0;
-				$boms = json_decode($value->minePositions,true) ;
-				if(!empty($relations['matchclick'])){
-					$matchClick = $relations['matchclick']->toArray();
-					foreach($matchClick as $item){
-						$next = $next + $item["next"];
-					}
-					$next = Utility::formatNumber($next);
-
-					$relations['matchclick'] = $relations['matchclick']->toArray();
-					$relations['matchclick'] = array_column($relations['matchclick'],"guess");
-					foreach(range(1,25) as $numb){
-						$click[$numb] = 0;
-						if(in_array($numb,$relations['matchclick'])){
-							$click[$numb] = 1;
+				if(!empty($relations['players'])) {
+					$matchClick = array();
+					$click = array();
+					$next = 0;
+					$boms = json_decode($value->minePositions, true);
+					if (!empty($relations['matchclick'])) {
+						$matchClick = $relations['matchclick']->toArray();
+						foreach ($matchClick as $item) {
+							$next = $next + $item["next"];
 						}
-						if(in_array($numb,$boms)){
-							$click[$numb] = 2;
+						$next = Utility::formatNumber($next);
+
+						$relations['matchclick'] = $relations['matchclick']->toArray();
+						$relations['matchclick'] = array_column($relations['matchclick'], "guess");
+						foreach (range(1, 25) as $numb) {
+							$click[$numb] = 0;
+							if (in_array($numb, $relations['matchclick'])) {
+								$click[$numb] = 1;
+							}
+							if (in_array($numb, $boms)) {
+								$click[$numb] = 2;
+							}
 						}
+
 					}
 
+					$label = config("constants.LABEL");
+					$stake = Utility::formatNumber($value->stake);
+					$bet = Utility::formatNumber($value->bet);
+
+					$winx = ($stake > $bet) ? $value->stake / $value->bet : 0;
+					$topWeek[] = array(
+						"name" => $relations['players']->username,
+						"bet" => Utility::formatNumber($value->bet),
+						"stake" => Utility::formatNumber($value->stake),
+						"winx" => $numberFormat->format($winx),
+						"next" => $next,
+						"match_click" => Utility::builHtmlClick($click),
+						"label" => $label[array_rand(range(0, 5))]
+					);
 				}
-
-				$label = config("constants.LABEL");
-				$stake = Utility::formatNumber($value->stake);
-				$bet = Utility::formatNumber($value->bet);
-
-				$winx = ($stake>$bet)?$value->stake/$value->bet:0;
-				$topWeek[] = array(
-					"name" => $relations['players']->username,
-					"bet" => Utility::formatNumber($value->bet),
-					"stake" => Utility::formatNumber($value->stake),
-					"winx" => $numberFormat->format($winx),
-					"next" => $next,
-					"match_click" => Utility::builHtmlClick($click),
-					"label" =>$label[array_rand(range(0,5))]
-				);
 			}
 		}
 		return $topWeek;

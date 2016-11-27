@@ -398,4 +398,52 @@ class Utility {
     }
 
 
+    public static function ip_visitor_country()
+    {
+
+        $ip = self::get_ip_address();
+        //$ip = '66.249.65.185';
+        //$ip = '113.160.56.102';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://www.geoplugin.net/json.gp?ip=".$ip);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        $ip_data_in = curl_exec($ch); // string
+        curl_close($ch);
+
+        $ip_data = json_decode($ip_data_in,true);
+        $ip_data = str_replace('&quot;', '"', $ip_data); // for PHP 5.2 see stackoverflow.com/questions/3110487/
+        return $ip_data;
+    }
+
+    public static function get_ip_address() {
+        $ip_keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
+        foreach ($ip_keys as $key) {
+            if (array_key_exists($key, $_SERVER) === true) {
+                foreach (explode(',', $_SERVER[$key]) as $ip) {
+                    // trim for safety measures
+                    $ip = trim($ip);
+                    // attempt to validate IP
+                    if (self::validate_ip($ip)) {
+                        return $ip;
+                    }
+                }
+            }
+        }
+
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
+    }
+
+    /**
+     * Ensures an ip address is both a valid IP and does not fall within
+     * a private network range.
+     */
+    public static function validate_ip($ip)
+    {
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -25,3 +25,4 @@ Route::post('game/cashout', "ApiController@cashout")->middleware('api');
 Route::post('game/getaddr', "ApiController@getaddr")->middleware('api');
 Route::post('game/live', "ApiController@live")->middleware('api');
 Route::post('account/change', "ApiController@account")->middleware('api');
+

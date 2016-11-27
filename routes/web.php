@@ -54,8 +54,8 @@ if (!in_array($pathName,$notRoute))
     })->where('slug', '[a-z0-9-.]+');
 }
 Route::get('games', "GamesController@index");
-Route::get('games/share/{id}/{random}', "GamesController@share")->where(['id' => '[0-9]+', 'random' => '[a-zA-Z]+']);
-
+Route::get('games/share/{id}/{random}', "GamesController@share")->where(['id' => '[0-9]+', 'random' => '[a-zA-Z0-9]+']);
+Route::post('games/login', "GamesController@login");
 
 /* ================== Homepage + Admin Routes ================== */
 

@@ -129,8 +129,10 @@ class ApiController extends AppController
                 $response["stake"]  = $match->stake;
             }
 
+            $stake = Utility::formatNumber($match->stake);
+
             $response["mines"] =  implode("-",$postionBomb);
-            $response["message"] =  "Cashed out {$match->stake} practice bits.";
+            $response["message"] =  "Cashed out {$stake} practice bits.";
             $response["game_id"] =  $match->id;
             $response["random_string"] =  $random_string;
             $match = Match::liveGame(1);

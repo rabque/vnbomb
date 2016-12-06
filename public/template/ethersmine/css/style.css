@@ -1378,6 +1378,9 @@ ul.addr_links li {
 	display: inline-block;
 	margin: 1.5em auto 0.5em;
 }
+.addr_details{
+	display: block;
+}
 .pw_modal {
 	min-height: 0;
 }

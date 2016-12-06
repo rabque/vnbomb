@@ -10,12 +10,18 @@
                     @lang("website.text_affiliate")
                     <form class="form-inline">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="exampleInputName2" placeholder="@lang("website.payment_address")">
+                            <input type="text" class="form-control" id="address" name="address" placeholder="@lang("website.payment_address")">
                         </div>
                         <div class="form-group">
                         <button type="submit" style="margin-bottom: 0px" class="btn btn-primary">@lang("website.get_url")</button>
                         </div>
+
+
+                        <div class="form-group">
+                            <div id="affiliate_result"></div>
+                        </div>
                     </form>
+
                 </div>
             </div>
 

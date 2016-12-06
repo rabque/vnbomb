@@ -28,7 +28,7 @@
                             <div class="center_block">
                                 <Center>
                                 <span class="headerbalance">@lang("website.balance")</span>
-                                <span class="val"><span class="num" title="Ƀ0.000000">0</span></span>
+                                <span class="val"><span class="num" title="Ƀ0.000000">{!! \App\Common\Utility::formatNumber($player->amount)  !!}</span></span>
                                 </Center>
                             </div>
                         </div>

@@ -156,10 +156,6 @@ function withdraw(e, t) {
             location: "/play/",
             page: "/play/",
             title: "Game"
-        }), ga("send", "event", "Speed", "Withdraw", void 0, new Date - timer, {
-            location: "/play/",
-            page: "/play/",
-            title: "Game"
         }), $(".modal_load .icon").html('<span style="color:#5a0;"><i class="icon-check"></i></span>'), $(".modal_load .content").html("<p>" + e.message + '</p><button class="line_btn line_btn_green close_all">OK</button>'), put_balance(e.balance), void 0)
     }).fail(function() {
         return reset_loader(), $(".withdraw_messages").prepend('<p class="error">Could not reach the server. Are you still connected to the internet?</p>'), !1
@@ -174,7 +170,7 @@ function look_for_deposits(e) {
     }), looking_for_deposits = !0), "undefined" == typeof e && (e = 0);
     var t = 0;
     balance_ping = $.ajax({
-        url: BASE_URL + "/api/game/refresh_balance.php",
+        url: BASE_URL + "/api/game/refresh_balance",
         data: "secret=" + playerhash,
         type: "POST",
         dataType: "json",
@@ -187,15 +183,7 @@ function look_for_deposits(e) {
             var s = read_balance();
             if (s < 1e6 * a.balance) {
                 var n = parseFloat(parseFloat(a.balance) - parseFloat(s / 1e6)).toFixed(6);
-                ga("send", "event", "Balance", "Deposit", void 0, Math.round(1e6 * n), {
-                    location: "/play/",
-                    page: "/play/",
-                    title: "Game"
-                }), ga("send", "event", "Speed", "New Game", void 0, new Date - t, {
-                    location: "/play/",
-                    page: "/play/",
-                    title: "Game"
-                }), $(".modal_load .icon").html('<span class="num_icon">+' + Math.round(1e6 * n).toLocaleString("en-US") + "</span>"), $(".modal_load .content").html('<p>You deposited <span class="big">Ƀ' + n.replace(/0+$/g, "") + '</span>. Exactly <span class="big">' + Math.round(1e6 * n).toLocaleString("en-US") + '</span> bits have been added to your balance.</p><button class="line_btn line_btn_green close_all">OK</button>')
+                $(".modal_load .icon").html('<span class="num_icon">+' + Math.round(1e6 * n).toLocaleString("en-US") + "</span>"), $(".modal_load .content").html('<p>You deposited <span class="big">Ƀ' + n.replace(/0+$/g, "") + '</span>. Exactly <span class="big">' + Math.round(1e6 * n).toLocaleString("en-US") + '</span> bits have been added to your balance.</p><button class="line_btn line_btn_green close_all">OK</button>')
             } else 6 > e ? (e++, balance_ping_timer = setTimeout(function() {
                 look_for_deposits(e)
             }, 500 * Math.pow(e, 2))) : (looking_for_deposits = !1, $(".modal_load .icon").html('<span style="color:#d00;"><i class="glyphicon glyphicon-certificate"></i></span>'), $(".modal_load .content").html('<p>Satoshi Mines could not find any new deposits.</p><p><button class="line_btn line_btn_red close_all">Cancel</button><button class="line_btn line_btn_green refresh_bal">Look Again</button>'));
@@ -453,5 +441,25 @@ function account(isUpdate) {
             setTimeout(function() {
               window.location.reload(true);;
             }, 2000);
+        });
+}
+
+function newaffiliate(){
+    $.ajax({
+            method: "POST",
+            dateType: "JSON",
+            data: {address: $("#address").val()},
+            url: BASE_URL + "/api/action/newaffiliate"
+        })
+        .done(function (msg) {
+            if(msg.success == true){
+                $("#affiliate_result").html("<div class='alert alert-success'>"+ msg.message +"</div>");
+            }else{
+                $("#affiliate_result").html("<div class='alert alert-danger'>"+ msg.message +"</div>");
+            }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            $("#affiliate_result").html("<div class='alert alert-danger'>"+errorThrown+"</div>").delay(5000).hide(0);
+
         });
 }

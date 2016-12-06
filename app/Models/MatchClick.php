@@ -53,9 +53,15 @@ class MatchClick extends Model
 
 			$next = Utility::calcNextPoint($match["default_stake"],$points["point"][$numberNext]);
 			//$numberLastNext = (!empty($numberLastNext))?$numberLastNext:$next;
+			$matchObject = (new Match())->getMatchbyHash($input["game_hash"]);;
+			if(empty($matchObject)){
+				throw new \Exception("Invalid match",500);
+			}
 			$random_string = str_random(6);
 			$matchClick = new MatchClick();
-			$matchClick->game_hash = $input["game_hash"];
+			$matchClick->game_hash =$matchObject->game_hash;
+			$matchClick->game_id =$matchObject->id;
+			$matchClick->player_id =$matchObject->player_id;
 			$matchClick->guess = $click;
 			$matchClick->stake = $match["default_stake"] + $numberLastNext + $next;
 			$matchClick->next = $next;
@@ -79,7 +85,7 @@ class MatchClick extends Model
 				$newmatchClick["bombs"] = implode("-",$postionBomb);
 				$newmatchClick["game_id"] = $match["id"];
 				$secret = implode("-",$postionBomb) . "-" . $random_string;
-				Match::where("game_hash",$match["game_hash"])->update(["secret_click"=>$secret,"status"=>1,"random_string" =>$random_string]);
+				Match::where("game_hash",$match["game_hash"])->update(["secret_click"=>$secret,"status"=>Match::MATH_WIN,"random_string" =>$random_string]);
 				//
 			}else{
 				Match::where("game_hash",$match["game_hash"])->update(["stake"=>$totalNext]);

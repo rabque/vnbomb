@@ -11,6 +11,13 @@ use Webpatser\Uuid\Uuid as UuidWeb;
 
 class Match extends Model
 {
+	const MATH_DEFAULT = 0;
+	const MATH_WIN = 1;
+	const MATH_CASHOUT = 2;
+
+	const MATCH_PRACTICE = "practice";
+	const MATCH_BITCOIN = "bitcoin";
+
     use SoftDeletes;
 	
 	protected $table = 'match';
@@ -30,7 +37,7 @@ class Match extends Model
 
 	public function players()
 	{
-		return $this->belongsTo('App\Models\Player', 'playerID','uuid');
+		return $this->belongsTo('App\Models\Player', 'player_id','id');
 	}
 
 
@@ -53,10 +60,10 @@ class Match extends Model
 
 					$match = new Match();
 					$match->game_hash = $hash;
-					$match->playerID = $player->uuid;
+					$match->player_id = $player->id;
 					$match->bet = $betAmount;
 					$match->betNumber = $betAmount;
-					$match->gametype = "practice";
+					$match->gametype = ($player->type == 1)?Match::MATCH_PRACTICE:Match::MATCH_BITCOIN;
 					$match->minePositions = $this->minePosition($numberOfMine);
 					$match->secret = UuidWeb::generate(5,encrypt(Uuid::uuid()),UuidWeb::NS_DNS);
 					$match->next = Utility::calcNextPoint($betAmount,$points["point"][1]);
@@ -78,7 +85,7 @@ class Match extends Model
 	}
 
 	public function getMatchbyHash($hash = "",$unsetMine = true){
-		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status','playerID','default_stake')->where("game_hash",$hash)->get()->first();
+		$data = self::select('id','game_hash','secret','bet','stake','next','betNumber','gametype','num_mines','minePositions','status','player_id','default_stake')->where("game_hash",$hash)->get()->first();
 
 		if(!empty($data)){
 			$data->next = Utility::formatBTC($data->next) ;
@@ -159,8 +166,8 @@ class Match extends Model
 
 	public static function topToday($limit = 5){
 		$data = Match::with("players")
-			->select(\DB::raw("SUM(match.bet) as amount_bet"),\DB::raw("SUM(match.stake) as amount_won"),\DB::raw("COUNT(match.playerID) as total_win"),"playerID")
-			->groupBy("match.playerID")
+			->select(\DB::raw("SUM(match.bet) as amount_bet"),\DB::raw("SUM(match.stake) as amount_won"),\DB::raw("COUNT(match.player_id) as total_win"),"player_id")
+			->groupBy("match.player_id")
 			->limit($limit)
 			->orderBy("match.id","DESC")
 			->get();

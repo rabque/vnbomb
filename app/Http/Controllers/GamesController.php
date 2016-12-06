@@ -122,9 +122,7 @@ class GamesController extends AppController
         }
 
         $input["secret"] = Utility::removeScripts($input["secret"]);
-        $player = new Player();
-        $player = $player->getPlayer($input["secret"]);
-        $error = "";
+        $player = Player::getPlayer($input["secret"]);
 
         if(!empty($player->password)){
             if(\Hash::check($input["password"], $player->password) == false){
@@ -146,6 +144,18 @@ class GamesController extends AppController
             "error" => $error,
             "uuid" => $player->uuid
         ]);
+
+    }
+
+
+    public function newaffiliate(Request $request){
+        $input = $request->only(["address"]);
+        if(empty($input["address"])){
+            throw new \Exception("Invalid data",500);
+        }
+
+        
+
 
     }
 

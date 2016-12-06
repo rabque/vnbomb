@@ -5,6 +5,7 @@ use App\Events\LiveMatch;
 use App\Models\Match;
 use App\Models\MatchClick;
 use App\Models\Player;
+use App\Models\PlayerAmount;
 use App\Models\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +43,7 @@ class ApiController extends AppController
             $newMatch["status"] = "error";
             $newMatch["message"] = "The maximum bet is 1,000,000 bits.";
         }else{
-            $player = (new Player())->getPlayer($input["player_hash"]);
+            $player = Player::getPlayer($input["player_hash"]);
             //save new game
             $match = new Match();
             $newMatch = $match->saveMatch($input,$player);
@@ -74,7 +75,7 @@ class ApiController extends AppController
             }
             $match = $match->toArray();
             if($match["status"] == 0){
-                $player = (new Player())->getPlayer($match["playerID"]);
+                $player = Player::getPlayer($match["player_id"],"id");
                 $matchClick = new MatchClick();
                 $clickdata = $matchClick->saveClick($input,$match);
                 $bit = Utility::bcdiv_cust($clickdata["next"] * config("constants.POINT_BIT_VIEW"),1);
@@ -119,13 +120,17 @@ class ApiController extends AppController
         if($match->status != 2){
             $postionBomb = json_decode($match->minePositions,true);
             $random_string = str_random(6);
-            $match->update(["status"=>2,"random_string" => $random_string]);
+            $match->update(["status"=>Match::MATH_CASHOUT,"random_string" => $random_string]);
             $response["status"] =  "success";
-            $response["win"] =  1;
-            $stake =  Utility::convertToSatoshifromBTC($match->stake);
-            $response["stake"]  = $stake;
+            if($match->gametype == Match::MATCH_PRACTICE){
+                $response["win"] =  0;
+            }else{
+                $response["win"] =  $match->stake;
+                $response["stake"]  = $match->stake;
+            }
+
             $response["mines"] =  implode("-",$postionBomb);
-            $response["message"] =  "Cashed out $stake practice bits.";
+            $response["message"] =  "Cashed out {$match->stake} practice bits.";
             $response["game_id"] =  $match->id;
             $response["random_string"] =  $random_string;
             $match = Match::liveGame(1);
@@ -213,6 +218,24 @@ class ApiController extends AppController
         }
 
         return response()->json($response);
+
+    }
+
+
+    public function refresh_balance(Request $request){
+        $input = $request->only(["secret"]);
+        if(empty($input["secret"])){
+            abort(404);
+        }
+
+        $playerAmount = PlayerAmount::Deposit($input["secret"]);
+        $response = array(
+          "status" => "success",
+            "balance" => "1",
+            "data" => $playerAmount
+        );
+        return response()->json($response);
+        //{"status":"success","balance":"0."}
 
     }
 

@@ -299,7 +299,10 @@ class Utility {
     }
 
     public static function convertToBTCFromSatoshi($value){
-        $value =  bcdiv(intval($value), 100000000, 8 );
+        if($value != 0){
+            $value =  bcdiv(intval($value), 100000000, 8 );
+        }
+
         return $value;
     }
 

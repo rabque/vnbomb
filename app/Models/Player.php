@@ -67,9 +67,9 @@ class Player extends Model
 		}
 	}
 
-	public function getPlayer($uuid){
+	public static function getPlayer($uuid,$field = "uuid"){
 		if(empty($uuid)) return false;
-		$player = Player::where("uuid",$uuid)->get()->first();
+		$player = Player::where($field,$uuid)->get()->first();
 		if(empty($player)){
 			throw new \Exception("Invalid data");
 		}

@@ -41,10 +41,11 @@ class Match extends Model
 	}
 
 
-	public function saveMatch($input, Player $player){
+	public function saveMatch($input, Player $player,$code = ""){
 		$numberOfMine =  $input["num_mines"];
 		$betAmount = $input["bet"];
 		try{
+
 			\DB::beginTransaction();
 			// create user if not exist
 			if(!empty($player)){
@@ -56,7 +57,6 @@ class Match extends Model
 					if(empty($points)){
 						throw new \Exception("Invalid point game type",500);
 					}
-
 
 					$match = new Match();
 					$match->game_hash = $hash;
@@ -73,6 +73,14 @@ class Match extends Model
 					$match->num_mines = $numberOfMine;
 					$match->save();
 					$match = $this->getMatchbyHash($match->game_hash);
+
+					//insert affiliate
+					$affiliate = Affiliate::getAffiliateByCode($code);
+					if(!empty($affiliate)){
+						if($match->player_id != $affiliate->player_id){
+							PlayerAffiliate::saveAffiliate($match,$affiliate);
+						}
+					}
 				}
 			}
 			\DB::commit();

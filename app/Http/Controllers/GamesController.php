@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Common\Utility;
+use App\Models\Affiliate;
 use App\Models\Article;
 use App\Models\Match;
 use App\Models\Player;
@@ -34,10 +35,13 @@ class GamesController extends AppController
 
     public function index($slug = "")
     {
-        if(empty($this->request->get("uuid"))){
-            throw new \Exception("Page not found",404);
+        //get affilit
+        $code = Utility::removeScripts($this->request->code);
+
+        if(empty($this->request->get("uuid")) && empty($this->uuid)){
+            abort(404);
         }
-        $uuid = $this->request->get("uuid");
+        $uuid = (!empty($this->request->get("uuid")))?$this->request->get("uuid"):$this->uuid;
         /*if($uuid != $this->uuid){
             throw new \Exception("Page not found",404);
         }*/
@@ -61,7 +65,8 @@ class GamesController extends AppController
             $view = view('games.index',[
                 "player"    => $newPlayer,
                 "lookPlayer"    => $lookPlayer,
-                "uuid" => $uuid
+                "uuid" => $uuid,
+                "code" => $code
             ]);
             return \Response::make($view)->withCookie($cookie);
         }else{
@@ -148,16 +153,6 @@ class GamesController extends AppController
     }
 
 
-    public function newaffiliate(Request $request){
-        $input = $request->only(["address"]);
-        if(empty($input["address"])){
-            throw new \Exception("Invalid data",500);
-        }
-
-        
-
-
-    }
 
 
 }

@@ -2,11 +2,14 @@
 namespace App\Http\Controllers;
 use App\Common\Utility;
 use App\Events\LiveMatch;
+use App\Models\Affiliate;
 use App\Models\Match;
 use App\Models\MatchClick;
 use App\Models\Player;
 use App\Models\PlayerAmount;
 use App\Models\Point;
+use App\Models\Setting_Game;
+use App\Models\Withdraw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Webpatser\Uuid\Uuid as UuidWeb;
@@ -28,7 +31,9 @@ class ApiController extends AppController
     }
 
     public function newgame(Request $request){
-        $requestParams = ['bd','bet','num_mines','player_hash'];
+
+
+        $requestParams = ['bd','bet','num_mines','player_hash',"code"];
         $input = $request->only($requestParams);
 
         foreach($requestParams as $r){
@@ -36,6 +41,7 @@ class ApiController extends AppController
                 throw new \Exception("Invalid data",500);
             }
         }
+        $code = Utility::removeScripts($input["code"]);
         if(Utility::checkFloat($input["bet"],false) == false){
             $newMatch["status"] = "error";
             $newMatch["message"] = "Invalid bet value";
@@ -46,7 +52,7 @@ class ApiController extends AppController
             $player = Player::getPlayer($input["player_hash"]);
             //save new game
             $match = new Match();
-            $newMatch = $match->saveMatch($input,$player);
+            $newMatch = $match->saveMatch($input,$player,$code);
             if(!empty($newMatch)){
                 $newMatch = $newMatch->toArray();
                 $newMatch["status"] = "success";
@@ -241,5 +247,101 @@ class ApiController extends AppController
 
     }
 
+
+
+    public function newaffiliate(Request $request){
+        $input = $request->only(["address"]);
+        if(empty($input["address"])){
+            return response()->json(["status"=>"error","message"=>"Invalid payment address"]);
+        }
+
+        $validator = \Validator::make($input, [
+            'address' => 'required|url',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->toArray();
+            $error = "";
+            if(!empty($errors)){
+                foreach($errors as $value){
+                    $value = current($value);
+                    $error .= "<p>$value</p>";
+                }
+            }
+
+            return response()->json(["status"=>"error","message"=>$error]);
+        }else{
+            $player = Player::getPlayer($this->uuid);
+            if(empty($player)){
+                return response()->json(["status"=>"error","message"=>"Invalid player"]);
+            }
+
+            $input["address"] = Utility::removeScripts($input["address"]);
+            $code = sha1(Utility::generateRandomString(5).time());
+            $secret = sha1(UuidWeb::generate(5,$code.$player->uuid.time(),UuidWeb::NS_DNS));
+            $Affiliate = new Affiliate();
+            $Affiliate->player_id = $player->id;
+            $Affiliate->address =$input["address"];
+            $Affiliate->secret = $secret;
+            $Affiliate->code = $code;
+            $insert = $Affiliate->save();
+            if($insert){
+                $response = ["status"=>"success","code"=>$Affiliate->code,"secret"=>$Affiliate->secret];
+            }else{
+                $response = ["status"=>"error","message"=>"[Error] add payment address"];
+            }
+            return response()->json($response);
+        }
+
+
+    }
+
+    public function full_cashout(Request $request){
+        $requestParams = ["secret","payto_address","amount"];
+        $input = $request->only($requestParams);
+        foreach($requestParams as $r){
+            if(!isset($input[$r])){
+                return response()->json(["status"=>"error","message"=>"Invalid parameter "]);
+                break;
+            }
+        }
+        $validator = \Validator::make($input, [
+            'payto_address' => 'required|url',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->toArray();
+            $error = "";
+            if(!empty($errors)){
+                foreach($errors as $value){
+                    $value = current($value);
+                    $error .= "<p>$value</p>";
+                }
+            }
+
+            return response()->json(["status"=>"error","message"=>$error]);
+        }else{
+            $player = Player::getPlayer($input["secret"]);
+            if(empty($player)){
+                return response()->json(["status"=>"error","message"=>"Invalid player "]);
+            }
+            $setting_games = Setting_Game::find(1);
+            $number_withdraw = (!empty($setting_games->withdraw))?$setting_games->withdraw:0;
+            $max = ($player->amount*$number_withdraw)/100;
+            $amount = $input["amount"];
+            if($amount > $max){
+                return response()->json(["status"=>"error","message"=>"Withdraw max {$number_withdraw}% amount "]);
+            }else{
+                $withdraw = new Withdraw();
+                $withdraw->player_id = $player->id;
+                $withdraw->address = Utility::removeScripts($input["payto_address"]);
+                $withdraw->amount = $amount;
+                $withdraw->save();
+                $balance = $player->amount - $amount;
+                return response()->json(["status"=>"success","message"=>"Withdrawal success","balance"=>$balance]);
+            }
+        }
+
+    }
 
 }

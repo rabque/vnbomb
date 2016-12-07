@@ -26,5 +26,7 @@ Route::post('game/getaddr', "ApiController@getaddr")->middleware('api');
 Route::post('game/live', "ApiController@live")->middleware('api');
 Route::post('game/refresh_balance', "ApiController@refresh_balance")->middleware('api');
 Route::post('action/newaffiliate', "ApiController@newaffiliate")->middleware('api');
+
+Route::post('game/full_cashout', "ApiController@full_cashout")->middleware('api');
 Route::post('account/change', "ApiController@account")->middleware('api');
 

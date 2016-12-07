@@ -110,4 +110,11 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_ROOT']], f
 	/* ================== Socials ================== */
 	Route::resource(config('laraadmin.adminRoute') . '/points', 'LA\PointsController');
 	Route::get(config('laraadmin.adminRoute') . '/point_dt_ajax', 'LA\PointsController@dtajax');
+	/* ================== Setting_Games ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/setting_games', 'LA\Setting_GamesController');
+	Route::get(config('laraadmin.adminRoute') . '/setting_game_dt_ajax', 'LA\Setting_GamesController@dtajax');
+
+	/* ================== Withdraws ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/withdraws', 'LA\WithdrawsController');
+	Route::get(config('laraadmin.adminRoute') . '/withdraw_dt_ajax', 'LA\WithdrawsController@dtajax');
 });

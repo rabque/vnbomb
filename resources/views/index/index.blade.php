@@ -13,9 +13,7 @@
                         <h1>{{  $slider->name  }}</h1>
                         <div class="small-text">{{  $slider->small_text }}</div>
                         <div class="btn-wrap pad-top-large">
-                            @if(!empty($slider->url))
-                                <a href="{{  $slider->url }}" class="btn btn-sm btn-primary line-btn"> View more <i class="icon-arrow-right-circle icons"></i> </a>
-                            @endif
+                         
                     </div>
                         </div>
                     <div class="col-sm-6 col-md-5 hidden-xs phone-holder">

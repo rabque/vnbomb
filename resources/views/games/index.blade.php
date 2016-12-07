@@ -7,6 +7,8 @@
         var playerhash = '{{ $uuid }}';
         var games = [];
         var bdval = '1190';
+        var code = '{{ $code }}';
+
     </Script>
 
 @endsection

@@ -36,3 +36,28 @@ $(document).ready(function () {
 $(window).load(function () {
     $('#loader-wrapper').delay(500).fadeOut();
 });
+
+
+function newaffiliate(){
+    if( $("#address").val() === ''){
+        $("#affiliate_result").html("<div class='alert alert-danger'>Paymen address not empty</div>").delay(5000).hide(0);
+        return false;
+    }
+    $.ajax({
+            method: "POST",
+            dateType: "JSON",
+            data: {address: $("#address").val()},
+            url: BASE_URL + "/api/action/newaffiliate"
+        })
+        .done(function (msg) {
+            if(msg.success == true){
+                $("#affiliate_result").html("<div class='alert alert-success'>"+ msg.message +"</div>");
+            }else{
+                $("#affiliate_result").html("<div class='alert alert-danger'>"+ msg.message +"</div>");
+            }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            $("#affiliate_result").html("<div class='alert alert-danger'>"+errorThrown+"</div>").delay(5000).hide(0);
+
+        });
+}

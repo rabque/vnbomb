@@ -1463,3 +1463,54 @@ pre{
 	position: relative;
 	top: 5px;
 }
+#affiliate_result{
+	margin-top: 20px;
+}
+.error {
+	background-color: #a94442;
+	border-color: #a94442;
+	color: #fff !important;
+	display: block;
+	padding: 5px 15px;
+	width: 100%;
+}
+.error p{
+	margin: 0px !important;
+}
+
+.img_large_rectangle,
+.img_medium_rectangle {
+	/*border-right:1px solid #555;*/
+	width:50%;
+	min-height:27.5em;
+}
+.img_medium_rectangle {
+	border-right:0;
+}
+.img_leaderboard {
+	width:100%;
+	/*border-top:1px solid #555;*/
+}
+
+.premade_affiliate_images {
+	overflow:auto;
+	width:100%;
+	margin-top:7em;
+	display:none;
+}
+.premade {
+
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+	float:left;
+	text-align:center;
+	padding:2em;
+}
+.yourlink {
+
+}
+
+.premade_label { font-weight:600; }
+.premade_size { color:#aaa; }
+.premade textarea { width:24em; font-size:0.7em; }

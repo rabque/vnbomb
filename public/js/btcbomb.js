@@ -42,7 +42,7 @@ function Game(e, t, a) {
         console.log(t);
     $.ajax({
         url: BASE_URL + "/api/game/newgame",
-        data: {"bd":bdval,"player_hash":playerhash,"bet":e+n,"num_mines":a},
+        data: {"bd":bdval,"player_hash":playerhash,"bet":e+n,"num_mines":a,"code":code},
         type: "POST",
         dataType: "json",
         beforeSend: function(e) {
@@ -144,7 +144,7 @@ function withdraw(e, t) {
         length: 8,
         radius: 15
     }), busy = !0, timer = 0, void $.ajax({
-        url: BASE_URL + "/api/game/full_cashout.php",
+        url: BASE_URL + "/api/game/full_cashout",
         data: "secret=" + playerhash + "&payto_address=" + e + "&amount=" + t,
         type: "POST",
         dataType: "json",
@@ -152,11 +152,8 @@ function withdraw(e, t) {
             timer = +new Date
         }
     }).done(function(e) {
-        return busy = !1, "success" != e.status ? "error" == e.status ? (reset_loader(), $(".withdraw_messages").prepend('<p class="error">' + e.message + "</p>"), !1) : (reset_loader(), $(".withdraw_messages").prepend('<p class="error">Unknown error.</p>'), !1) : (ga("send", "event", "Balance", "Withdraw", void 0, Math.round(1e6 * t), {
-            location: "/play/",
-            page: "/play/",
-            title: "Game"
-        }), $(".modal_load .icon").html('<span style="color:#5a0;"><i class="icon-check"></i></span>'), $(".modal_load .content").html("<p>" + e.message + '</p><button class="line_btn line_btn_green close_all">OK</button>'), put_balance(e.balance), void 0)
+        return busy = !1, "success" != e.status ? "error" == e.status ? (reset_loader(), $(".withdraw_messages").prepend('<div class="error">' + e.message + "</div>"), !1) : (reset_loader(), $(".withdraw_messages").prepend('<div class="error">Unknown error.</div>'), !1) :
+            ( $(".modal_load .icon").html('<span style="color:#5a0;"><i class="icon-check"></i></span>'), $(".modal_load .content").html("<div>" + e.message + '</div><button class="line_btn line_btn_green close_all">OK</button>'), put_balance(e.balance), void 0)
     }).fail(function() {
         return reset_loader(), $(".withdraw_messages").prepend('<p class="error">Could not reach the server. Are you still connected to the internet?</p>'), !1
     }))
@@ -441,25 +438,5 @@ function account(isUpdate) {
             setTimeout(function() {
               window.location.reload(true);;
             }, 2000);
-        });
-}
-
-function newaffiliate(){
-    $.ajax({
-            method: "POST",
-            dateType: "JSON",
-            data: {address: $("#address").val()},
-            url: BASE_URL + "/api/action/newaffiliate"
-        })
-        .done(function (msg) {
-            if(msg.success == true){
-                $("#affiliate_result").html("<div class='alert alert-success'>"+ msg.message +"</div>");
-            }else{
-                $("#affiliate_result").html("<div class='alert alert-danger'>"+ msg.message +"</div>");
-            }
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            $("#affiliate_result").html("<div class='alert alert-danger'>"+errorThrown+"</div>").delay(5000).hide(0);
-
         });
 }

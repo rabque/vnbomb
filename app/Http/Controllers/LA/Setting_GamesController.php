@@ -23,7 +23,7 @@ class Setting_GamesController extends Controller
 {
 	public $show_action = true;
 	public $view_col = 'affiliate';
-	public $listing_cols = ['id', 'affiliate', 'withdraw'];
+	public $listing_cols = ['id', 'affiliate', 'withdraw','afiliate_threshold'];
 	
 	public function __construct() {
 		// Field Access of Listing Columns

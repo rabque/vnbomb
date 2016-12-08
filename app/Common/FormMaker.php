@@ -151,8 +151,135 @@ class FormMaker extends LAFormMaker
                     }
                     $out .= "<a class='btn btn-default btn_upload_files' file_type='files' selecter='".$field_name."' style='margin-top:5px;'>Upload <i class='fa fa-cloud-upload'></i></a>";
                     break;
+                case 'Multiselect':
+                    $out .= '<label for="'.$field_name.'">'.$label.$required_ast.' :</label>';
 
+                    unset($params['data-rule-maxlength']);
+                    $params['data-placeholder'] = "Select multiple ".str_plural($label);
+                    unset($params['placeholder']);
+                    $params['multiple'] = "true";
+                    $params['rel'] = "select2";
+                    if($default_val == null) {
+                        if($defaultvalue != "") {
+                            $default_val = json_decode($defaultvalue);
+                        } else {
+                            $default_val = "";
+                        }
+                    }
+                    // Override the edit value
+                    if(isset($row) && isset($row->$field_name)) {
+                        $default_val = json_decode($row->$field_name);
+                    }
 
+                    if($popup_vals != "") {
+                        $popup_vals = self::process_values($popup_vals);
+                    } else {
+                        $popup_vals = array();
+                    }
+                    $out .= Form::select($field_name."[]", $popup_vals, $default_val, $params);
+                    break;
+                case 'Dropdown':
+                    $out .= '<label for="'.$field_name.'">'.$label.$required_ast.' :</label>';
+
+                    unset($params['data-rule-maxlength']);
+                    $params['data-placeholder'] = $params['placeholder'];
+                    unset($params['placeholder']);
+                    $params['rel'] = "select2";
+
+                    //echo $defaultvalue;
+                    if($default_val == null) {
+                        $default_val = $defaultvalue;
+                    }
+                    // Override the edit value
+                    if(isset($row) && isset($row->$field_name)) {
+                        $default_val = $row->$field_name;
+                    }
+
+                    if($popup_vals != "") {
+                        $popup_vals = self::process_values($popup_vals);
+                    } else {
+                        $popup_vals = array();
+                    }
+                    $out .= Form::select($field_name, $popup_vals, $default_val, $params);
+                    break;
+                case 'Taginput':
+                    $out .= '<label for="'.$field_name.'">'.$label.$required_ast.' :</label>';
+
+                    if(isset($params['data-rule-maxlength'])) {
+                        $params['maximumSelectionLength'] = $params['data-rule-maxlength'];
+                        unset($params['data-rule-maxlength']);
+                    }
+                    $params['multiple'] = "true";
+                    $params['rel'] = "taginput";
+                    $params['data-placeholder'] = "Add multiple ".str_plural($label);
+                    unset($params['placeholder']);
+
+                    // Override the edit value
+                    if(isset($row) && isset($row->$field_name)) {
+                        $default_val = json_decode($row->$field_name);
+                    }
+
+                    if($default_val == null) {
+                        $defaultvalue2 = json_decode($defaultvalue);
+                        if(is_array($defaultvalue2)) {
+                            $default_val = $defaultvalue;
+                        } else if(is_string($defaultvalue)) {
+                            if (strpos($defaultvalue, ',') !== false) {
+                                $default_val = array_map('trim', explode(",", $defaultvalue));
+                            } else {
+                                $default_val = [$defaultvalue];
+                            }
+                        } else {
+                            $default_val = array();
+                        }
+                    }
+                    $default_val = self::process_values($default_val);
+                    $out .= Form::select($field_name."[]", $default_val, $default_val, $params);
+                    break;
+                case 'Radio':
+                    $out .= '<label for="'.$field_name.'">'.$label.$required_ast.' : </label><br>';
+
+                    // ############### Remaining
+                    unset($params['placeholder']);
+                    unset($params['data-rule-maxlength']);
+
+                    if($default_val == null) {
+                        $default_val = $defaultvalue;
+                    }
+                    // Override the edit value
+                    if(isset($row) && isset($row->$field_name)) {
+                        $default_val = $row->$field_name;
+                    }
+
+                    if(starts_with($popup_vals, "@")) {
+                        $popup_vals = self::process_values($popup_vals);
+                        $out .= '<div class="radio">';
+                        foreach ($popup_vals as $key => $value) {
+                            $sel = false;
+                            if($default_val != "" && $default_val == $value) {
+                                $sel = true;
+                            }
+                            $out .= '<label>'.(Form::radio($field_name, $key, $sel)).' '.$value.' </label>';
+                        }
+                        $out .= '</div>';
+                        break;
+                    } else {
+                        if($popup_vals != "") {
+                            $popup_vals = array_values(json_decode($popup_vals));
+                        } else {
+                            $popup_vals = array();
+                        }
+                        $out .= '<div class="radio">';
+                        foreach ($popup_vals as $value) {
+                            $sel = false;
+                            if($default_val != "" && $default_val == $value) {
+                                $sel = true;
+                            }
+                            $out .= '<label>'.(Form::radio($field_name, $value, $sel)).' '.$value.' </label>';
+                        }
+                        $out .= '</div>';
+                        break;
+                    }
                 case 'Image':
                 case 'TextField':
                     $nameArr = array("logo","image","favicon");
@@ -207,5 +334,296 @@ class FormMaker extends LAFormMaker
             return "";
         }
     }
+
+
+    /**
+     * Processes the populated values for Multiselect / Taginput / Dropdown
+     * get data from module / table whichever is found if starts with '@'
+     **/
+    // $values = self::process_values($data);
+    public static function process_values($json) {
+        $out = array();
+        // Check if populated values are from Module or Database Table
+        if(is_string($json) && starts_with($json, "@")) {
+
+            // Get Module / Table Name
+            $json = str_ireplace("@", "", $json);
+            $table_name = strtolower(str_plural($json));
+
+            // Search Module
+            $module = Module::getByTable($table_name);
+            if(isset($module->id)) {
+                $out = Module::getDDArray($module->name);
+            } else {
+                // Search Table if no module found
+                if (Schema::hasTable($table_name)) {
+
+                    $model = "App\\".ucfirst(str_singular($table_name));
+                    if(class_exists($model) == false){
+                        $model = "App\\Models\\".ucfirst(str_singular($table_name));
+                    }
+                    $result = $model::all();
+                    // find view column name
+                    $view_col = "";
+                    // Check if atleast one record exists
+                    if(isset($result[0])) {
+                        $view_col_test_1 = "name";
+                        $view_col_test_2 = "title";
+                        if(isset($result[0]->$view_col_test_1)) {
+                            // Check whether view column name == "name"
+                            $view_col = $view_col_test_1;
+                        } else if(isset($result[0]->$view_col_test_2)) {
+                            // Check whether view column name == "title"
+                            $view_col = $view_col_test_2;
+                        } else {
+                            // retrieve the second column name which comes after "id"
+                            $arr2 = $result[0]->toArray();
+                            $arr2 = array_keys($arr2);
+                            $view_col = $arr2[1];
+                            // if second column not exists
+                            if(!isset($result[0]->$view_col)) {
+                                $view_col = "";
+                            }
+                        }
+                        // If view column name found successfully through all above efforts
+                        if($view_col != "") {
+                            // retrieve rows of table
+                            foreach ($result as $row) {
+                                $out[$row->id] = $row->$view_col;
+                            }
+                        } else {
+                            // Failed to find view column name
+                        }
+                    } else {
+                        // Skipped efforts to detect view column name
+                    }
+                } else if(Schema::hasTable($json)) {
+                    // $array = \DB::table($table_name)->get();
+                }
+            }
+        } else if(is_string($json)) {
+            $array = json_decode($json);
+            if(is_array($array)) {
+                foreach ($array as $value) {
+                    $out[$value] = $value;
+                }
+            } else {
+                // TODO: Check posibility of comma based pop values.
+            }
+        } else if(is_array($json)) {
+            foreach ($json as $value) {
+                $out[$value] = $value;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Display field using blade directive @la_display
+     **/
+    public static function display($module, $field_name, $class = 'form-control')
+    {
+        // Check Field View Aceess
+        if(Module::hasFieldAccess($module->id, $module->fields[$field_name]['id'], $access_type = "view")) {
+
+            $fieldObj = $module->fields[$field_name];
+            $label = $module->fields[$field_name]['label'];
+            $field_type = $module->fields[$field_name]['field_type'];
+            $field_type = ModuleFieldTypes::find($field_type);
+
+            $row = null;
+            if(isset($module->row)) {
+                $row = $module->row;
+            }
+
+            $out = '<div class="form-group">';
+            $out .= '<label for="'.$field_name.'" class="col-md-2">'.$label.' :</label>';
+
+            $value = $row->$field_name;
+
+            switch ($field_type->name) {
+                case 'Address':
+                    if($value != "") {
+                        $value = $value.'<a target="_blank" class="pull-right btn btn-xs btn-primary btn-circle" href="http://maps.google.com/?q='.$value.'" data-toggle="tooltip" data-placement="left" title="Check location on Map"><i class="fa fa-map-marker"></i></a>';
+                    }
+                    break;
+                case 'Checkbox':
+                    if($value == 0) {
+                        $value = "<div class='label label-danger'>False</div>";
+                    } else {
+                        $value = "<div class='label label-success'>True</div>";
+                    }
+                    break;
+                case 'Currency':
+
+                    break;
+                case 'Date':
+                    $dt = strtotime($value);
+                    $value = date("d M Y", $dt);
+                    break;
+                case 'Datetime':
+                    $dt = strtotime($value);
+                    $value = date("d M Y, h:i A", $dt);
+                    break;
+                case 'Decimal':
+
+                    break;
+                case 'Dropdown':
+                    $values = self::process_values($fieldObj['popup_vals']);
+                    if(starts_with($fieldObj['popup_vals'], "@")) {
+                        if($value != 0) {
+                            $moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
+                            if(isset($moduleVal->id)) {
+                                $value = "<a href='".url(config("laraadmin.adminRoute")."/".$moduleVal->name_db."/".$value)."' class='label label-primary'>".$values[$value]."</a> ";
+                            } else {
+                                $value = "<a class='label label-primary'>".$values[$value]."</a> ";
+                            }
+                        } else {
+                            $value = "None";
+                        }
+                    }
+                    break;
+                case 'Email':
+                    $value = '<a href="mailto:'.$value.'">'.$value.'</a>';
+                    break;
+                case 'File':
+                    if($value != 0) {
+                        $upload = \App\Models\Upload::find($value);
+                        if(isset($upload->id)) {
+                            $value = '<a class="preview" target="_blank" href="'.url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name).'">
+							<span class="fa-stack fa-lg"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-file-o fa-stack-1x fa-inverse"></i></span> '.$upload->name.'</a>';
+                        } else {
+                            $value = 'Uplaoded file not found.';
+                        }
+                    } else {
+                        $value = 'No file.';
+                    }
+                    break;
+                case 'Files':
+                    if($value != "" && $value != "[]" && $value != "null" && starts_with($value, "[")) {
+                        $uploads = json_decode($value);
+                        $uploads_html = "";
+
+                        foreach ($uploads as $uploadId) {
+                            $upload = \App\Models\Upload::find($uploadId);
+                            if(isset($upload->id)) {
+                                $uploadIds[] = $upload->id;
+                                $fileImage = "";
+                                if(in_array($upload->extension, ["jpg", "png", "gif", "jpeg"])) {
+                                    $fileImage = "<img src='".url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name."?s=90")."'>";
+                                } else {
+                                    $fileImage = "<i class='fa fa-file-o'></i>";
+                                }
+                                // $uploadImages .= "<a class='uploaded_file2' upload_id='".$upload->id."' target='_blank' href='".url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name)."'>".$fileImage."<i title='Remove File' class='fa fa-times'></i></a>";
+                                $uploads_html .= '<a class="preview" target="_blank" href="'.url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name).'" data-toggle="tooltip" data-placement="top" data-container="body" style="display:inline-block;margin-right:5px;" title="'.$upload->name.'">
+										'.$fileImage.'</a>';
+                            }
+                        }
+                        $value = $uploads_html;
+                    } else {
+                        $value = 'No files found.';
+                    }
+                    break;
+                case 'Float':
+
+                    break;
+                case 'HTML':
+                    break;
+                case 'Image':
+                    if($value != 0) {
+                        $upload = \App\Models\Upload::find($value);
+                    }
+                    if(isset($upload->id)) {
+                        $value = '<a class="preview" target="_blank" href="'.url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name).'"><img src="'.url("files/".$upload->hash.DIRECTORY_SEPARATOR.$upload->name."?s=150").'"></a>';
+                    } else {
+                        $value = 'Uplaoded image not found.';
+                    }
+                    break;
+                case 'Integer':
+
+                    break;
+                case 'Mobile':
+                    $value = '<a target="_blank" href="tel:'.$value.'">'.$value.'</a>';
+                    break;
+                case 'Multiselect':
+                    $valueOut = "";
+                    $values = self::process_values($fieldObj['popup_vals']);
+                    if(count($values)) {
+                        if(starts_with($fieldObj['popup_vals'], "@")) {
+                            $moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
+                            $valueSel = json_decode($value);
+                            foreach ($values as $key => $val) {
+                                if(in_array($key, $valueSel)) {
+                                    $valueOut .= "<a href='".url(config("laraadmin.adminRoute")."/".$moduleVal->name_db."/".$key)."' class='label label-primary'>".$val."</a> ";
+                                }
+                            }
+                        } else {
+                            $valueSel = json_decode($value);
+                            foreach ($values as $key => $val) {
+                                if(in_array($key, $valueSel)) {
+                                    $valueOut .= "<span class='label label-primary'>".$val."</span> ";
+                                }
+                            }
+                        }
+                    }
+                    $value = $valueOut;
+                    break;
+                case 'Name':
+
+                    break;
+                case 'Password':
+                    $value = '<a href="#" data-toggle="tooltip" data-placement="top" data-container="body" title="Cannot be declassified !!!">********</a>';
+                    break;
+                case 'Radio':
+
+                    break;
+                case 'String':
+
+                    break;
+                case 'Taginput':
+                    $valueOut = "";
+                    $values = self::process_values($fieldObj['popup_vals']);
+                    if(count($values)) {
+                        if(starts_with($fieldObj['popup_vals'], "@")) {
+                            $moduleVal = Module::getByTable(str_replace("@", "", $fieldObj['popup_vals']));
+                            $valueSel = json_decode($value);
+                            foreach ($values as $key => $val) {
+                                if(in_array($key, $valueSel)) {
+                                    $valueOut .= "<a href='".url(config("laraadmin.adminRoute")."/".$moduleVal->name_db."/".$key)."' class='label label-primary'>".$val."</a> ";
+                                }
+                            }
+                        } else {
+                            $valueSel = json_decode($value);
+                            foreach ($valueSel as $key => $val) {
+                                $valueOut .= "<span class='label label-primary'>".$val."</span> ";
+                            }
+                        }
+                    } else {
+                        $valueSel = json_decode($value);
+                        foreach ($valueSel as $key => $val) {
+                            $valueOut .= "<span class='label label-primary'>".$val."</span> ";
+                        }
+                    }
+                    $value = $valueOut;
+                    break;
+                case 'Textarea':
+
+                    break;
+                case 'TextField':
+
+                    break;
+                case 'URL':
+                    $value = '<a target="_blank" href="'.$value.'">'.$value.'</a>';
+                    break;
+            }
+
+            $out .= '<div class="col-md-10 fvalue">'.$value.'</div>';
+            $out .= '</div>';
+            return $out;
+        } else {
+            return "";
+        }
+    }
+
 
 }

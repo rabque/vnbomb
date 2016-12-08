@@ -9,11 +9,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Match extends Model
+class Game extends Model
 {
     use SoftDeletes;
 	
-	protected $table = 'match';
+	protected $table = 'games';
 	
 	protected $hidden = [
         

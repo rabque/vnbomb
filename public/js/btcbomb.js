@@ -42,7 +42,7 @@ function Game(e, t, a) {
         console.log(t);
     $.ajax({
         url: BASE_URL + "/api/game/newgame",
-        data: {"bd":bdval,"player_hash":playerhash,"bet":e+n,"num_mines":a,"code":code},
+        data: {"bd":bdval,"player_hash":playerhash,"bet":e+n,"num_mines":a},
         type: "POST",
         dataType: "json",
         beforeSend: function(e) {
@@ -290,7 +290,7 @@ Game.prototype.message = function(e, t) {
         color: "#000"
     }), e.addClass("active_tile"), busy = !0, $.ajax({
         url: BASE_URL + "/api/game/checkboard",
-        data: "game_hash=" + t.game_hash + "&guess=" + a + "&v04=1",
+        data: "game_hash=" + t.game_hash + "&guess=" + a + "&v04=1&code="+code,
         type: "POST",
         dataType: "json",
         beforeSend: function() {

@@ -19,8 +19,8 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_ROOT']], f
 	
 	/* ================== Dashboard ================== */
 	
-	Route::get(config('laraadmin.adminRoute'), 'LA\ContactsController@index');
-	Route::get(config('laraadmin.adminRoute'). '/dashboard', 'LA\ContactsController@index');
+	Route::get(config('laraadmin.adminRoute'), 'LA\DashboardController@index');
+	Route::get(config('laraadmin.adminRoute'). '/dashboard', 'LA\DashboardController@index');
 	
 	/* ================== Users ================== */
 	Route::resource(config('laraadmin.adminRoute') . '/users', 'LA\UsersController');
@@ -117,4 +117,20 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_ROOT']], f
 	/* ================== Withdraws ================== */
 	Route::resource(config('laraadmin.adminRoute') . '/withdraws', 'LA\WithdrawsController');
 	Route::get(config('laraadmin.adminRoute') . '/withdraw_dt_ajax', 'LA\WithdrawsController@dtajax');
+
+	/* ================== Games ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/games', 'LA\GamesController');
+	Route::get(config('laraadmin.adminRoute') . '/game_dt_ajax', 'LA\GamesController@dtajax');
+
+	/* ================== Match ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/match', 'LA\MatchController');
+	Route::get(config('laraadmin.adminRoute') . '/match_dt_ajax', 'LA\MatchController@dtajax');
+
+	/* ================== Players ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/players', 'LA\PlayersController');
+	Route::get(config('laraadmin.adminRoute') . '/player_dt_ajax', 'LA\PlayersController@dtajax');
+
+	/* ================== Affiliates ================== */
+	Route::resource(config('laraadmin.adminRoute') . '/affiliates', 'LA\AffiliatesController');
+	Route::get(config('laraadmin.adminRoute') . '/affiliate_dt_ajax', 'LA\AffiliatesController@dtajax');
 });

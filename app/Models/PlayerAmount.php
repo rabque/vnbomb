@@ -20,12 +20,8 @@ class PlayerAmount extends AppModel
     protected $dates = ['deleted_at'];
 
 
-    public static function Deposit($uuid = ""){
-        if(empty($uuid)) return false;
-        $player = (new Player())->getPlayer($uuid);
-        if(empty($player)){
-            throw new \Exception("invalid player",500);
-        }
+    public static function Deposit(Player $player){
+
         $playerAmount = new PlayerAmount();
         $playerAmount->player_id = $player->id;
         $playerAmount->object_id  = 0;
@@ -33,7 +29,7 @@ class PlayerAmount extends AppModel
         $playerAmount->amounts  = 1;
         $insert = $playerAmount->save();
         if($insert == true){
-            Player::where("uuid",$uuid)->update(["type"=>2]);
+            Player::where("id",$player->id)->update(["type"=>2]);
         }
         return $insert;
     }

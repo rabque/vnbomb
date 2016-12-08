@@ -21,7 +21,7 @@ class MatchClick extends Model
 	protected $dates = ['deleted_at'];
 
 
-	public function saveClick($input,$match){
+	public function saveClick($input,$match,$code = ""){
 		$click = $input["guess"];
 		//Points
 		$points = Point::getPointByGameType($match["num_mines"]);
@@ -87,6 +87,15 @@ class MatchClick extends Model
 				$secret = implode("-",$postionBomb) . "-" . $random_string;
 				Match::where("game_hash",$match["game_hash"])->update(["secret_click"=>$secret,"status"=>Match::MATH_WIN,"random_string" =>$random_string]);
 				//
+
+				//insert affiliate
+				$affiliate = Affiliate::getAffiliateByCode($code);
+				if(!empty($affiliate)){
+					//if($match->player_id != $affiliate->player_id){
+						PlayerAffiliate::saveAffiliate($match,$affiliate);
+					//}
+				}
+
 			}else{
 				Match::where("game_hash",$match["game_hash"])->update(["stake"=>$totalNext]);
 			}

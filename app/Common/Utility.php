@@ -300,7 +300,7 @@ class Utility {
 
     public static function convertToBTCFromSatoshi($value){
         if($value != 0){
-            $value =  bcdiv(intval($value), 100000000, 8 );
+            $value =  bcdiv(intval($value), 1000000, 6 );
         }
 
         return $value;
@@ -320,9 +320,9 @@ class Utility {
         return $value;
     }
 
-    public static function formatNumber($number){
+    public static function formatNumber($number,$isconvert = true){
 
-        $number = self::formatBTC(self::convertToSatoshifromBTC($number));
+        $number = ($isconvert == true)?self::formatBTC(self::convertToSatoshifromBTC($number)):$number;
         $number = ($number > 0)?ceil($number):0;
         $numberFormat = new \NumberFormatter("it-IT", \NumberFormatter::DECIMAL);
         $number = $numberFormat->format($number);

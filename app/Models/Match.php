@@ -41,7 +41,7 @@ class Match extends Model
 	}
 
 
-	public function saveMatch($input, Player $player,$code = ""){
+	public function saveMatch($input, Player $player){
 		$numberOfMine =  $input["num_mines"];
 		$betAmount = $input["bet"];
 		try{
@@ -73,14 +73,6 @@ class Match extends Model
 					$match->num_mines = $numberOfMine;
 					$match->save();
 					$match = $this->getMatchbyHash($match->game_hash);
-
-					//insert affiliate
-					$affiliate = Affiliate::getAffiliateByCode($code);
-					if(!empty($affiliate)){
-						if($match->player_id != $affiliate->player_id){
-							PlayerAffiliate::saveAffiliate($match,$affiliate);
-						}
-					}
 				}
 			}
 			\DB::commit();

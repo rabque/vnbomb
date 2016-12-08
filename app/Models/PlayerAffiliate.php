@@ -24,12 +24,12 @@ class PlayerAffiliate extends AppModel
         if(empty($match) || empty($affiliate)) return false;
         $setting_games = Setting_Game::find(1);
         $data = new PlayerAffiliate();
-        $data->player_id = $match->player_id;
-        $data->match_id  = $match->id;
+        $data->player_id = $match["player_id"];
+        $data->match_id  = $match["id"];
         $data->player_affiliate_id  = $affiliate->player_id;
         $data->affiliate_id  = $affiliate->id;
 
-        $amount = ($match->stake*$setting_games->affiliate)/100;
+        $amount = ($match["default_stake"]*$setting_games->affiliate)/100;
         $data->amount  = $amount;
         $insert = $data->save();
 

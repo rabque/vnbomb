@@ -33,7 +33,7 @@ class ApiController extends AppController
     public function newgame(Request $request){
 
 
-        $requestParams = ['bd','bet','num_mines','player_hash',"code"];
+        $requestParams = ['bd','bet','num_mines','player_hash'];
         $input = $request->only($requestParams);
 
         foreach($requestParams as $r){
@@ -41,7 +41,7 @@ class ApiController extends AppController
                 throw new \Exception("Invalid data",500);
             }
         }
-        $code = Utility::removeScripts($input["code"]);
+
         if(Utility::checkFloat($input["bet"],false) == false){
             $newMatch["status"] = "error";
             $newMatch["message"] = "Invalid bet value";
@@ -52,7 +52,7 @@ class ApiController extends AppController
             $player = Player::getPlayer($input["player_hash"]);
             //save new game
             $match = new Match();
-            $newMatch = $match->saveMatch($input,$player,$code);
+            $newMatch = $match->saveMatch($input,$player);
             if(!empty($newMatch)){
                 $newMatch = $newMatch->toArray();
                 $newMatch["status"] = "success";
@@ -62,7 +62,7 @@ class ApiController extends AppController
     }
 
     public function checkboard(Request $request){
-        $requestParams = ['game_hash','guess','v04'];
+        $requestParams = ['game_hash','guess','v04',"code"];
         $input = $request->only($requestParams);
 
         foreach($requestParams as $r){
@@ -81,9 +81,10 @@ class ApiController extends AppController
             }
             $match = $match->toArray();
             if($match["status"] == 0){
+                $code = Utility::removeScripts($input["code"]);
                 $player = Player::getPlayer($match["player_id"],"id");
                 $matchClick = new MatchClick();
-                $clickdata = $matchClick->saveClick($input,$match);
+                $clickdata = $matchClick->saveClick($input,$match,$code);
                 $bit = Utility::bcdiv_cust($clickdata["next"] * config("constants.POINT_BIT_VIEW"),1);
                 if(!empty($clickdata)){
                     $clickdata["status"] = "success";
@@ -235,16 +236,17 @@ class ApiController extends AppController
         if(empty($input["secret"])){
             abort(404);
         }
-
-        $playerAmount = PlayerAmount::Deposit($input["secret"]);
+        $player = Player::getPlayer($input["secret"]);
+        if(empty($player)){
+            return response()->json(["status"=>"error","message"=>"Invalid player"]);
+        }
+        PlayerAmount::Deposit($player);
+        $player = Player::getPlayer($input["secret"]);
         $response = array(
-          "status" => "success",
-            "balance" => "1",
-            "data" => $playerAmount
+            "status" => "success",
+            "balance" => $player->amount,
         );
         return response()->json($response);
-        //{"status":"success","balance":"0."}
-
     }
 
 
@@ -327,10 +329,11 @@ class ApiController extends AppController
             }
             $setting_games = Setting_Game::find(1);
             $number_withdraw = (!empty($setting_games->withdraw))?$setting_games->withdraw:0;
-            $max = ($player->amount*$number_withdraw)/100;
+            $max = Utility::convertToBTCFromSatoshi($number_withdraw);
+            $number_withdraw = Utility::formatNumber($number_withdraw,false);
             $amount = $input["amount"];
             if($amount > $max){
-                return response()->json(["status"=>"error","message"=>"Withdraw max {$number_withdraw}% amount "]);
+                return response()->json(["status"=>"error","message"=>"Withdraw max {$number_withdraw} $amount $max amount "]);
             }else{
                 $withdraw = new Withdraw();
                 $withdraw->player_id = $player->id;

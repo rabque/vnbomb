@@ -13,7 +13,7 @@
                         <h1>{{  $slider->name  }}</h1>
                         <div class="small-text">{{  $slider->small_text }}</div>
                         <div class="btn-wrap pad-top-large">
-                         
+
                     </div>
                         </div>
                     <div class="col-sm-6 col-md-5 hidden-xs phone-holder">

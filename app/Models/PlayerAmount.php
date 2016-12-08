@@ -25,7 +25,7 @@ class PlayerAmount extends AppModel
         $playerAmount = new PlayerAmount();
         $playerAmount->player_id = $player->id;
         $playerAmount->object_id  = 0;
-        $playerAmount->type  = 2;
+        $playerAmount->type  = 1;
         $playerAmount->amounts  = 1;
         $insert = $playerAmount->save();
         if($insert == true){

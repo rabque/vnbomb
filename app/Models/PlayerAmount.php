@@ -29,12 +29,12 @@ class PlayerAmount extends AppModel
         $playerAmount->amounts  = 1;
 
         $insert = $playerAmount->save();
-        /*if($insert == true){
+        if($insert == true){
             Player::where("id",$player->id)->update([
                 "type"=>2,
                 "deposit"  => $player->deposit + 1
             ]);
-        }*/
+        }
         return $insert;
     }
 

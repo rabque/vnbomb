@@ -73,6 +73,12 @@ class Player extends AppModel
 		if(empty($player)){
 			throw new \Exception("Invalid data");
 		}
+		if($player->amount == 0){
+			self::where("id",$player->id)->update(["type"=>1]);
+			$player->type = 1;
+		}else{
+			$player->type = 2;
+		}
 		return $player;
 	}
 
@@ -102,8 +108,6 @@ class Player extends AppModel
 			return $return;
 		}catch(\Exception $e){
 			\DB::rollback();
-			var_dump($e->getCode());
-			var_dump($e->getLine());
 			throw new \Exception($e->getMessage(),500);
 		}
 	}

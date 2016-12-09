@@ -255,6 +255,11 @@ class Match extends AppModel
 	}
 
 
+	public static function getTopStake(){
+		return self::where("gametype","bitcoin")->orderBy("stake","DESC")->limit(10)->get();
+	}
+
+
 
 
 }

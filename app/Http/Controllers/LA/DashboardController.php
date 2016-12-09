@@ -11,6 +11,8 @@ use App\Http\Requests;
 use App\Models\Affiliate;
 use App\Models\Match;
 use App\Models\Player;
+use App\Models\PlayerAmount;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /**
@@ -40,9 +42,13 @@ class DashboardController extends Controller
         $count_match = Match::countdata();
         $count_affiliate = Affiliate::countdata();
         $count_players = Player::countdata();
+        $topPlayer =  PlayerAmount::getTopPlayer();
+        $topWinMatch =  Match::getTopStake();
+        $allGame = PlayerAmount::getAllGame();
 
-
-
+        $assign["allGame"] = $allGame;
+        $assign["topWinMatch"] = $topWinMatch;
+        $assign["topPlayer"] = $topPlayer;
         $assign["count_match"] = $count_match;
         $assign["count_affiliate"] = $count_affiliate;
         $assign["count_players"] = $count_players;

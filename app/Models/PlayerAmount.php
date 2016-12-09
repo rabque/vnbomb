@@ -27,11 +27,20 @@ class PlayerAmount extends AppModel
         $playerAmount->object_id  = 0;
         $playerAmount->type  = 1;
         $playerAmount->amounts  = 1;
+
         $insert = $playerAmount->save();
-        if($insert == true){
-            Player::where("id",$player->id)->update(["type"=>2]);
-        }
+        /*if($insert == true){
+            Player::where("id",$player->id)->update([
+                "type"=>2,
+                "deposit"  => $player->deposit + 1
+            ]);
+        }*/
         return $insert;
+    }
+
+    public static function getTopPlayer($params = array()){
+
+
     }
 
 }

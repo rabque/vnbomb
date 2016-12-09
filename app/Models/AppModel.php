@@ -120,4 +120,10 @@ class AppModel extends Model
         }
     }
 
+    public static function countdata()
+    {
+        return self::select("id")->get()->count();
+    }
+
+
 }

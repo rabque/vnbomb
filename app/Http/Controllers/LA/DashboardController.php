@@ -8,6 +8,9 @@ namespace App\Http\Controllers\LA;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Models\Affiliate;
+use App\Models\Match;
+use App\Models\Player;
 use Illuminate\Http\Request;
 
 /**
@@ -33,8 +36,16 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        //Các tổng số
+        $count_match = Match::countdata();
+        $count_affiliate = Affiliate::countdata();
+        $count_players = Player::countdata();
 
 
-        return View('la.dashboard');
+
+        $assign["count_match"] = $count_match;
+        $assign["count_affiliate"] = $count_affiliate;
+        $assign["count_players"] = $count_players;
+        return View('la.dashboard',$assign);
     }
 }

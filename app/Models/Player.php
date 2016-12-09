@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Webpatser\Uuid\Uuid as UuidWeb;
 use Illuminate\Cookie\CookieJar;
 
-class Player extends Model
+class Player extends AppModel
 {
 	use SoftDeletes;
 

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Symfony\Component\HttpFoundation\Request;
 use Webpatser\Uuid\Uuid as UuidWeb;
 
-class Match extends Model
+class Match extends AppModel
 {
 	const MATH_DEFAULT = 0;
 	const MATH_WIN = 1;

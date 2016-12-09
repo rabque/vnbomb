@@ -65,53 +65,53 @@
             <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Tổng số game chơi</h3>
+                        <h3 class="box-title">Tỷ lệ game </h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-md-8">
-                                <p class="text-center">
-                                    <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-                                </p>
+                            <?php
+                                $win = $lose = $cashout = $affiliate = 0;
+                                if(!empty($allGame)){
+                                    foreach($allGame as $data){
+                                        $bet = ($data->type == 2)?$data->amounts:0;
+                                        if($data->type == 3){
+                                            if($data->amounts > $bet){
+                                                $win = $win + $data->amounts;
+                                            }else{
+                                                $lose = $lose + $data->amounts;
+                                            }
+                                        }
 
-                                <div class="chart">
-                                    <!-- Sales Chart Canvas -->
-                                    <canvas id="salesChart" style="height: 58px; width: 212px;" height="58" width="212"></canvas>
-                                </div>
-                                <!-- /.chart-responsive -->
-                            </div>
-                            <!-- /.col -->
+                                        if($data->type == 5){
+                                            $affiliate = $affiliate + $data->amounts;
+                                        }
+                                        if($data->type == 4){
+                                            $cashout = $cashout + $data->amounts;
+                                        }
 
-                            <!-- /.col -->
+                                    }
+                                }
+
+                            ?>
                         </div>
-                        <!-- /.row -->
-                    </div>
-                    <!-- ./box-body -->
-                    <div class="box-footer">
+
                         <div class="row">
                             <div class="col-sm-3 col-xs-6">
                                 <div class="description-block border-right">
-                                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                                    <h5 class="description-header">$35,210.43</h5>
+                                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i></span>
+                                    <h5 class="description-header">{{ \App\Common\Utility::formatNumber($win) }}</h5>
                                     <span class="description-text">THẮNG</span>
                                 </div>
                                 <!-- /.description-block -->
                             </div>
                             <!-- /.col -->
-                            <div class="col-sm-3 col-xs-6">
-                                <div class="description-block border-right">
-                                    <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                                    <h5 class="description-header">$10,390.90</h5>
-                                    <span class="description-text">THUA</span>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
+
                             <!-- /.col -->
                             <div class="col-sm-3 col-xs-6">
                                 <div class="description-block border-right">
-                                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                                    <h5 class="description-header">$24,813.53</h5>
+                                    <span class="description-percentage text-green"><i class="fa fa-caret-left"></i></span>
+                                    <h5 class="description-header">{{ \App\Common\Utility::formatNumber($cashout) }}</h5>
                                     <span class="description-text">CASHOUT</span>
                                 </div>
                                 <!-- /.description-block -->
@@ -119,15 +119,18 @@
                             <!-- /.col -->
                             <div class="col-sm-3 col-xs-6">
                                 <div class="description-block">
-                                    <span class="description-percentage text-red"><i class="fa fa-caret-down"></i> 18%</span>
-                                    <h5 class="description-header">1200</h5>
+                                    <span class="description-percentage text-red"><i class="fa fa-caret-left"></i></span>
+                                    <h5 class="description-header">{{ \App\Common\Utility::formatNumber($affiliate)  }}</h5>
                                     <span class="description-text">AFFILIATES</span>
                                 </div>
                                 <!-- /.description-block -->
                             </div>
                         </div>
                         <!-- /.row -->
+                        <!-- /.row -->
                     </div>
+                    <!-- ./box-body -->
+
                     <!-- /.box-footer -->
                 </div>
                 <!-- /.box -->
@@ -143,23 +146,30 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <p class="text-center">
-                                    <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-                                </p>
+                        <div class="table-responsive">
+                            <table class="table no-margin">
+                                <thead>
+                                <tr>
+                                    <th>Player</th>
+                                    <th>Amount</th>
+                                    <th>Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php if(!empty($topPlayer)){ ?>
+                                @foreach($topPlayer as $player)
+                                <tr>
+                                    <td>{{ $player->username }}</td>
+                                    <td>{{ \App\Common\Utility::formatNumber($player->total_amount) }}</td>
+                                    <td><span class="label label-success">{{ $player->total_win }}</span></td>
 
-                                <div class="chart">
-                                    <!-- Sales Chart Canvas -->
-                                    <canvas id="salesChart" style="height: 58px; width: 212px;" height="58" width="212"></canvas>
-                                </div>
-                                <!-- /.chart-responsive -->
-                            </div>
-                            <!-- /.col -->
-
-                            <!-- /.col -->
+                                </tr>
+                                @endforeach
+                                <?php } ?>
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- /.row -->
+
                     </div>
                     <!-- ./box-body -->
 
@@ -177,23 +187,27 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <p class="text-center">
-                                    <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
-                                </p>
+                        <table class="table no-margin">
+                        <thead>
+                        <tr>
+                            <th>Hash</th>
+                            <th>Bet</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php if(!empty($topWinMatch)){ ?>
+                        @foreach($topWinMatch as $match)
+                            <tr>
+                                <td>{{ $match->game_hash }}</td>
+                                <td>{{ \App\Common\Utility::formatNumber($match->bet) }}</td>
+                                <td>{{ \App\Common\Utility::formatNumber($match->stake) }}</td>
 
-                                <div class="chart">
-                                    <!-- Sales Chart Canvas -->
-                                    <canvas id="salesChart" style="height: 58px; width: 212px;" height="58" width="212"></canvas>
-                                </div>
-                                <!-- /.chart-responsive -->
-                            </div>
-                            <!-- /.col -->
-
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
+                            </tr>
+                        @endforeach
+                        <?php } ?>
+                        </tbody>
+                        </table>
                     </div>
                     <!-- ./box-body -->
 

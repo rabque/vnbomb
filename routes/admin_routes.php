@@ -133,4 +133,9 @@ Route::group(['as' => $as, 'middleware' => ['auth', 'permission:ADMIN_ROOT']], f
 	/* ================== Affiliates ================== */
 	Route::resource(config('laraadmin.adminRoute') . '/affiliates', 'LA\AffiliatesController');
 	Route::get(config('laraadmin.adminRoute') . '/affiliate_dt_ajax', 'LA\AffiliatesController@dtajax');
+
+
+	Route::resource(config('laraadmin.adminRoute') . '/analytics/top_play', 'LA\AnalyticsController@top_play');
+	Route::resource(config('laraadmin.adminRoute') . '/analytics/top_match', 'LA\AnalyticsController@top_match');
+	Route::resource(config('laraadmin.adminRoute') . '/analytics/proportion', 'LA\AnalyticsController@proportion');
 });

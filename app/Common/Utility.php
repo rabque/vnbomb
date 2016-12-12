@@ -449,4 +449,30 @@ class Utility {
         return true;
     }
 
+    public static function printTypePlayerAmount($type){
+        //1: bitcoin, 2: new_game, 3 : win game, 4: cash out, 5 : affiliate, 6 : withdraw
+        $value = "";
+        switch($type){
+            case 1:
+                $value = "<span class='label label-danger'>Bitcoin</span>";
+                break;
+            case 2:
+                $value = "<span class='label label-primary'>New Game</span>";
+                break;
+            case 3:
+                $value = "<span class='label label-success'>Win Game</span>";
+                break;
+            case 4:
+                $value = "<span class='label label-warning'>CashOut</span>";
+                break;
+            case 5:
+                $value = "<span class='label label-default'>Affiliate</span>";
+                break;
+            case 6:
+                $value = "<span class='label label-default'>withdraw</span>";
+                break;
+        }
+        return $value;
+    }
+
 }

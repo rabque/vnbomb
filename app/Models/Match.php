@@ -255,8 +255,18 @@ class Match extends AppModel
 	}
 
 
-	public static function getTopStake(){
-		return self::where("gametype","bitcoin")->orderBy("stake","DESC")->limit(10)->get();
+	public static function getTopStake($params = array()){
+		$query =  self::where("match.gametype","bitcoin");
+
+		if(!empty($params["start_date"])){
+			$query->whereDate("match.created_at",">=",$params["start_date"]);
+		}
+
+		if(!empty($params["end_date"])){
+			$query->whereDate("match.created_at","<=",$params["end_date"]);
+		}
+		$result = $query->orderBy("match.stake","DESC")->paginate(config("constants.NUMBER_PAGE"));
+		return $result;
 	}
 
 

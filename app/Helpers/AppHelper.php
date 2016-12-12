@@ -43,6 +43,8 @@ class AppHelper extends LAHelper
                     if($access){
                         $str .= LAHelper::print_menu($children);
                     }
+                }else{
+                    $str .= '<li'.$treeview.' '.$active_str.'><a href="'.url(config("laraadmin.adminRoute") . $children->url ) .'"><i class="fa '.$children->icon.'"></i> <span>'.LAHelper::real_module_name($children->name).'</span></a>';
                 }
 
 

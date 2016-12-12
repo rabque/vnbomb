@@ -8,3 +8,5 @@
 <link href="{{ asset('/template/ethersmine/css/animate.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('/template/ethersmine/css/bootsnav.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ asset('/template/ethersmine/css/style.css') }}" rel="stylesheet" type="text/css">
+
+

@@ -193,6 +193,7 @@
                             <th>Hash</th>
                             <th>Bet</th>
                             <th>Total</th>
+                            <th>Date</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -200,9 +201,9 @@
                         @foreach($topWinMatch as $match)
                             <tr>
                                 <td>{{ $match->game_hash }}</td>
-                                <td>{{ \App\Common\Utility::formatNumber($match->bet) }}</td>
-                                <td>{{ \App\Common\Utility::formatNumber($match->stake) }}</td>
-
+                                <td><label class="label label-primary"> {{ \App\Common\Utility::formatNumber($match->bet) }}</label></td>
+                                <td><label class="label label-danger">{{ \App\Common\Utility::formatNumber($match->stake) }}</label></td>
+                                <td>{{ $match->created_at }}</td>
                             </tr>
                         @endforeach
                         <?php } ?>

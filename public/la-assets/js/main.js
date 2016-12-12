@@ -30,6 +30,12 @@ $(document).ready(function () {
     });
 
     $(".point_list input").ForceNumericOnly();
+
+    //Date picker
+    $('.datepicker').datepicker({
+        autoclose: true,
+        format: 'yyyy-m-d'
+    });
 });
 function uploadLfm(id){
     $('#' + id).filemanager('image');
